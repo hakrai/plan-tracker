@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Maskable icon: keep important content inside safe zone -->
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6366f1"/>
+      <stop offset="1" stop-color="#8e54e9"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Full-bleed background for maskable -->
+  <rect x="0" y="0" width="512" height="512" fill="url(#g)"/>
+
+  <!-- Safe zone content (approx 20% padding) -->
+  <g transform="translate(0 0)">
+    <circle cx="256" cy="256" r="120" fill="none" stroke="#ffffff" stroke-width="28" opacity="0.95"/>
+    <circle cx="256" cy="256" r="70" fill="none" stroke="#ffffff" stroke-width="28" opacity="0.92"/>
+    <circle cx="256" cy="256" r="20" fill="#ffffff" opacity="0.98"/>
+    <path d="M372 162l10 24 24 10-24 10-10 24-10-24-24-10 24-10z" fill="#fbbf24" opacity="0.95"/>
+  </g>
+</svg>

@@ -1,0 +1,3555 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🎯 PlanTracker Pro - AI Powered</title>
+    <meta name="theme-color" content="#6366f1">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="icons/maskable.svg">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            --xp-color: #fbbf24;
+            --purple: #8b5cf6;
+            --pink: #ec4899;
+            --cyan: #06b6d4;
+            --ai-color: #8E54E9;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #f1f5f9;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #e2e8f0;
+            --bg-card: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            --border: #cbd5e1;
+            --shadow: rgba(0,0,0,0.08);
+            --shadow-lg: rgba(0,0,0,0.15);
+            --overlay: rgba(15,23,42,0.5);
+            --gradient-card: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            --ai-gradient: linear-gradient(135deg, #E0C3FC 0%, #8EC5FC 100%);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --bg-card: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border: #475569;
+            --shadow: rgba(0,0,0,0.3);
+            --shadow-lg: rgba(0,0,0,0.5);
+            --overlay: rgba(0,0,0,0.7);
+            --gradient-card: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            --ai-gradient: linear-gradient(135deg, #4338ca 0%, #5b21b6 100%);
+        }
+
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            overscroll-behavior: none;
+            touch-action: pan-y;
+            user-select: none;
+        }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            min-height: 100dvh;
+            transition: background 0.3s, color 0.3s;
+            padding-bottom: 90px;
+        }
+
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+        .glass {
+            background: var(--bg-secondary);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card-gradient {
+            background: var(--gradient-card);
+        }
+
+        .card-interactive:active { transform: scale(0.98); }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 22px;
+            border-radius: 14px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
+            touch-action: manipulation;
+        }
+
+        .btn:active { transform: scale(0.96); }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-ai {
+            background: linear-gradient(135deg, #4776E6 0%, #8E54E9 100%);
+            color: white;
+            box-shadow: 0 4px 14px rgba(142, 84, 233, 0.4);
+        }
+
+        .btn-success { background: var(--success); color: white; }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-warning { background: var(--warning); color: white; }
+        .btn-ghost { background: transparent; color: var(--text-secondary); }
+
+        .btn-icon {
+            width: 44px;
+            height: 44px;
+            padding: 0;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-sm { padding: 10px 16px; font-size: 13px; }
+        .btn-sm.btn-icon { width: 36px; height: 36px; }
+
+        .input {
+            width: 100%;
+            padding: 16px;
+            border-radius: 14px;
+            border: 2px solid var(--border);
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            font-size: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+        }
+
+        .badge {
+            padding: 6px 12px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-high { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+        .badge-medium { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+        .badge-low { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+
+        .animated-bg {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .animated-bg::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 50%);
+            animation: float 15s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(120deg); }
+            66% { transform: translate(-20px, 20px) rotate(240deg); }
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-around;
+            padding: 6px 0 max(6px, env(safe-area-inset-bottom));
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 6px 12px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-radius: 16px;
+            position: relative;
+            min-width: 60px;
+        }
+
+        .nav-item.active { color: var(--primary); }
+
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 24px;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 3px;
+        }
+
+        .nav-item i { font-size: 20px; margin-bottom: 2px; }
+        .nav-item span { font-size: 10px; font-weight: 600; }
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: var(--overlay);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        .modal.active { opacity: 1; visibility: visible; pointer-events: auto; }
+
+        .modal-content {
+            background: var(--bg-secondary);
+            border-radius: 28px 28px 0 0;
+            width: 100%;
+            max-width: 500px;
+            max-height: 92vh;
+            overflow-y: auto;
+            transform: translateY(100%);
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .modal.active .modal-content { transform: translateY(0); }
+
+        .modal-handle {
+            width: 40px;
+            height: 5px;
+            background: var(--border);
+            border-radius: 5px;
+            margin: 12px auto;
+            cursor: grab;
+        }
+
+        .plan-card { overflow: hidden; position: relative; }
+
+        .plan-steps {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .plan-card.expanded .plan-steps { max-height: 600px; }
+        .plan-card.expanded { box-shadow: 0 8px 30px var(--shadow-lg); }
+
+        .step-check {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .step-check:active { transform: scale(0.85); }
+
+        .step-check.done {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 6px;
+            padding: 12px;
+            background: var(--bg-tertiary);
+            border-radius: 0 0 20px 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .quick-btn {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            padding: 10px 6px;
+            border-radius: 12px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-height: 60px;
+        }
+
+        .quick-btn:active { transform: scale(0.95); background: var(--bg-tertiary); }
+        .quick-btn i { font-size: 18px; }
+        .quick-btn.gitlab-btn { color: #fc6d26; }
+        .quick-btn.edit-btn { color: var(--info); }
+        .quick-btn.done-btn { color: var(--success); }
+        .quick-btn.delete-btn { color: var(--danger); }
+
+        .fab {
+            position: fixed;
+            bottom: 90px;
+            right: 16px;
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+            z-index: 100;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .fab-ai {
+            right: 84px;
+            background: linear-gradient(135deg, #4776E6 0%, #8E54E9 100%);
+            box-shadow: 0 6px 20px rgba(142, 84, 233, 0.5);
+        }
+
+        .fab:active { transform: scale(0.9) rotate(90deg); }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-120px);
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            padding: 14px 20px;
+            border-radius: 14px;
+            box-shadow: 0 10px 30px var(--shadow-lg);
+            z-index: 3000;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-width: 90%;
+            font-size: 14px;
+        }
+
+        .toast.show { transform: translateX(-50%) translateY(0); }
+        .toast.success { border-left: 4px solid var(--success); }
+        .toast.error { border-left: 4px solid var(--danger); }
+        .toast.info { border-left: 4px solid var(--info); }
+        .toast.xp { border-left: 4px solid var(--xp-color); }
+
+        .xp-bar {
+            height: 8px;
+            border-radius: 4px;
+            background: var(--bg-tertiary);
+            overflow: hidden;
+        }
+
+        .xp-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #fbbf24, #f59e0b);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .level-badge {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #1a1a1a;
+            font-weight: 800;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 3px 10px rgba(251, 191, 36, 0.4);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+        }
+
+        .calendar-day:active { transform: scale(0.9); }
+        .calendar-day.today { border-color: var(--primary); color: var(--primary); font-weight: 800; }
+        .calendar-day.has-task::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--info);
+        }
+        .calendar-day.has-deadline::after { background: var(--danger); }
+        .calendar-day.streak { background: rgba(251, 191, 36, 0.15); border-color: transparent; }
+        .calendar-day.completed { background: rgba(16, 185, 129, 0.15); border-color: transparent; }
+        .calendar-day.all-routines-done { border: 2px solid var(--purple); }
+        .calendar-day.other-month { opacity: 0.3; }
+
+        .calendar-header-day {
+            text-align: center;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            padding: 8px 0;
+            text-transform: uppercase;
+        }
+
+        .routine-scroll {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding: 4px 4px 16px 4px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .routine-item {
+            flex: 0 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            width: 70px;
+        }
+
+        .routine-circle {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .routine-circle i { font-size: 20px; }
+
+        .routine-circle.done {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .routine-streak {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--text-muted);
+            background: var(--bg-tertiary);
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        .stat-ring { transform: rotate(-90deg); }
+        .stat-ring circle { transition: stroke-dashoffset 0.8s ease; }
+
+        .filter-pills {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 4px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .filter-pills::-webkit-scrollbar { display: none; }
+
+        .filter-pill {
+            padding: 8px 14px;
+            border-radius: 20px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-pill:active { transform: scale(0.95); }
+
+        .filter-pill.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .achievement {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 14px;
+            background: var(--bg-tertiary);
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .achievement.unlocked {
+            border-color: var(--xp-color);
+            background: rgba(251, 191, 36, 0.1);
+        }
+
+        .achievement.locked { opacity: 0.5; }
+
+        .achievement-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            background: var(--bg-secondary);
+        }
+
+        .achievement.unlocked .achievement-icon {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
+        @keyframes xp-pop {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-50px) scale(1.2); opacity: 0; }
+        }
+
+        @keyframes slide-up {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes confetti-fall {
+            to { transform: translateY(110vh) rotate(720deg); }
+        }
+
+        .animate-slide-up { animation: slide-up 0.5s ease forwards; }
+        .confetti { position: fixed; pointer-events: none; z-index: 9999; }
+
+        .xp-popup {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            font-weight: 800;
+            font-size: 24px;
+            color: var(--xp-color);
+            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            animation: xp-pop 1s ease forwards;
+        }
+
+        .ai-loading { display: inline-flex; gap: 4px; }
+        .ai-loading span {
+            width: 6px;
+            height: 6px;
+            background: white;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+        .ai-loading span:nth-child(1) { animation-delay: -0.32s; }
+        .ai-loading span:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+
+        .hidden { display: none !important; }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            position: relative;
+        }
+
+        .live-dot::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: var(--success);
+            animation: pulse-ring 1.5s ease-out infinite;
+        }
+
+        .search-bar { position: relative; }
+        .search-bar input { padding-left: 44px; padding-right: 44px; }
+
+        .search-bar .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .search-bar .clear-btn {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg-secondary);
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .search-bar .clear-btn.show { display: flex; }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 24px;
+            padding-bottom: 16px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 7px;
+            top: 8px;
+            bottom: 0;
+            width: 2px;
+            background: var(--border);
+        }
+
+        .timeline-item:last-child::before { display: none; }
+
+        .timeline-dot {
+            position: absolute;
+            left: 0;
+            top: 4px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: 3px solid var(--bg-secondary);
+        }
+
+        @media (min-width: 768px) {
+            .modal-content {
+                border-radius: 28px;
+                margin: 20px;
+                max-height: calc(100vh - 40px);
+            }
+            .modal { align-items: center; }
+        }
+    </style>
+</head>
+<body data-theme="light">
+    <!-- Toast -->
+    <div id="toast" class="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toast-message">Berhasil!</span>
+    </div>
+
+    <!-- Header -->
+    <header class="glass sticky top-0 z-50 px-4 py-3 border-b" style="border-color: var(--border)">
+        <div class="flex items-center justify-between max-w-lg mx-auto">
+            <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg">
+                    <i class="fas fa-bullseye text-white text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg" style="color: var(--text-primary)">PlanTracker <span class="text-xs px-1 rounded bg-indigo-500 text-white">AI</span></h1>
+                    <div class="flex items-center gap-2">
+                        <div class="live-dot"></div>
+                        <p class="text-xs font-medium" style="color: var(--text-muted)" id="header-subtitle">Aktif</p>
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <button class="btn btn-ghost btn-sm btn-icon" onclick="app.ui.toggleTheme()" title="Theme">
+                    <i class="fas fa-moon text-lg" id="theme-icon"></i>
+                </button>
+                <button class="btn btn-ghost btn-sm btn-icon" onclick="app.ui.showGlobalSync()" title="GitLab Sync" style="padding: 0; display: flex; align-items: center; justify-content: center;">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;">
+                        <path d="M22.65 14.39L19.005 3.165C18.89 2.81 18.5 2.81 18.385 3.165L16.485 9H7.51499L5.61499 3.165C5.49999 2.81 5.10999 2.81 4.99499 3.165L1.34999 14.39C1.26499 14.65 1.34499 14.935 1.55499 15.11L11.53 22.86C11.795 23.065 12.205 23.065 12.47 22.86L22.445 15.11C22.655 14.935 22.735 14.65 22.65 14.39Z" fill="#FC6D26"/>
+                        <path d="M22.65 14.39L19.005 3.165C18.89 2.81 18.5 2.81 18.385 3.165L16.485 9H7.51499L5.61499 3.165C5.49999 2.81 5.10999 2.81 4.99499 3.165L1.34999 14.39C1.26499 14.65 1.34499 14.935 1.55499 15.11L12 23.23L22.445 15.11C22.655 14.935 22.735 14.65 22.65 14.39Z" fill="#E24329"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main -->
+    <main class="px-4 py-4 max-w-lg mx-auto" id="main-content">
+        <!-- Page: Dashboard -->
+        <section id="page-dashboard" class="page">
+            <!-- Daily Routine Section -->
+            <div class="mb-4">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center gap-2">
+                        <h3 class="font-bold text-sm" style="color: var(--text-primary)">🌞 Rutin Harian</h3>
+                        <span class="text-[10px] font-bold px-2 py-1 rounded-full" style="background: var(--bg-tertiary); color: var(--text-muted)" id="routine-today-pill">0/0</span>
+                    </div>
+                    <div class="flex gap-1">
+                        <button class="btn btn-sm btn-ghost btn-icon" onclick="app.ui.showRoutineModal(true)" title="Kelola Rutinitas">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card p-3 mb-3" style="background: var(--bg-tertiary)">
+                    <div class="flex items-center justify-between gap-2">
+                        <div class="min-w-0">
+                            <div class="text-xs font-bold" style="color: var(--text-primary)">Progress rutin hari ini</div>
+                            <div class="text-[11px]" style="color: var(--text-muted)" id="routine-today-sub">Selesaikan rutin untuk jaga streak</div>
+                        </div>
+                        <button class="btn btn-sm btn-secondary" onclick="app.routines.toggleAllToday()" title="Selesaikan semua rutin hari ini">
+                            <i class="fas fa-check-double"></i>
+                            <span class="hidden sm:inline">Selesaikan</span>
+                        </button>
+                    </div>
+                    <div class="xp-bar mt-2">
+                        <div class="xp-fill" id="routine-today-bar" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="routine-scroll" id="routine-list"></div>
+            </div>
+
+            <!-- Hero Stats Card -->
+            <div class="card p-4 mb-4 animated-bg card-gradient">
+                <div class="flex items-center justify-between mb-3 relative z-10">
+                    <div class="flex items-center gap-3">
+                        <div class="level-badge">
+                            <i class="fas fa-star"></i>
+                            <span>Lv.<span id="user-level">1</span></span>
+                        </div>
+                        <div>
+                            <div class="text-sm font-bold" style="color: var(--text-primary)" id="level-title">Pemula</div>
+                            <div class="text-xs" style="color: var(--text-muted)"><span id="user-xp">0</span> XP</div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-3xl font-black" style="color: var(--xp-color)" id="streak-count">0</div>
+                        <div class="text-xs font-bold" style="color: var(--text-muted)">🔥 Streak</div>
+                    </div>
+                </div>
+                <div class="xp-bar mb-2">
+                    <div class="xp-fill" id="xp-bar-fill" style="width: 0%"></div>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-xs" style="color: var(--text-muted)" id="xp-current">0 XP</span>
+                    <span class="text-xs" style="color: var(--text-muted)" id="xp-next">100 XP untuk level up</span>
+                </div>
+            </div>
+
+            <!-- Quick Stats Grid -->
+            <div class="grid grid-cols-4 gap-2 mb-4">
+                <div class="card p-3 text-center card-interactive" onclick="app.ui.setFilter('all')">
+                    <div class="text-xl font-bold" style="color: var(--primary)" id="stat-total">0</div>
+                    <div class="text-[10px] font-bold" style="color: var(--text-muted)">Total</div>
+                </div>
+                <div class="card p-3 text-center card-interactive" onclick="app.ui.setFilter('planning')">
+                    <div class="text-xl font-bold" style="color: var(--info)" id="stat-planning">0</div>
+                    <div class="text-[10px] font-bold" style="color: var(--text-muted)">Rencana</div>
+                </div>
+                <div class="card p-3 text-center card-interactive" onclick="app.ui.setFilter('progress')">
+                    <div class="text-xl font-bold" style="color: var(--warning)" id="stat-progress">0</div>
+                    <div class="text-[10px] font-bold" style="color: var(--text-muted)">Proses</div>
+                </div>
+                <div class="card p-3 text-center card-interactive" onclick="app.ui.setFilter('completed')">
+                    <div class="text-xl font-bold" style="color: var(--success)" id="stat-completed">0</div>
+                    <div class="text-[10px] font-bold" style="color: var(--text-muted)">Selesai</div>
+                </div>
+            </div>
+
+            <!-- Motivational Quote -->
+            <div class="card p-4 mb-4" style="background: linear-gradient(135deg, var(--primary), #7c3aed); border: none;">
+                <div class="flex items-start gap-3">
+                    <div class="text-2xl">💡</div>
+                    <div class="flex-1">
+                        <p class="text-sm italic text-white/90" id="daily-quote">"Perjalanan seribu mil dimulai dengan satu langkah."</p>
+                        <p class="text-xs mt-1 text-white/60" id="quote-author">- Lao Tzu</p>
+                    </div>
+                </div>
+                <button class="btn btn-sm w-full mt-3" style="background: rgba(255,255,255,0.2); color: white; border: none;" onclick="app.ai.generateQuote()">
+                    <i class="fas fa-magic mr-1"></i> AI Quote Motivasi
+                </button>
+            </div>
+
+            <!-- Search & Filter -->
+            <div class="search-bar mb-3">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="input" id="search-input" placeholder="Cari target..." oninput="app.ui.handleSearch()">
+                <button class="clear-btn" id="search-clear" onclick="app.ui.clearSearch()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="filter-pills mb-4" id="filter-pills">
+                <button class="filter-pill active" data-filter="all" onclick="app.ui.setFilter('all')">📋 Semua</button>
+                <button class="filter-pill" data-filter="high" onclick="app.ui.setFilter('high')">🔴 Prioritas</button>
+                <button class="filter-pill" data-filter="today" onclick="app.ui.setFilter('today')">📅 Hari Ini</button>
+                <button class="filter-pill" data-filter="overdue" onclick="app.ui.setFilter('overdue')">⚠️ Terlambat</button>
+            </div>
+
+            <!-- Plans List -->
+            <div id="plans-list" class="space-y-3"></div>
+
+            <!-- Empty State -->
+            <div id="empty-state" class="card p-8 text-center hidden">
+                <div class="text-5xl mb-4">🎯</div>
+                <h3 class="font-bold text-lg mb-2" style="color: var(--text-primary)">Belum Ada Target</h3>
+                <p class="text-sm mb-5" style="color: var(--text-muted)">Buat target pertama dan mulai kumpulkan XP!</p>
+                <button class="btn btn-primary" onclick="app.ui.showPlanModal()">
+                    <i class="fas fa-plus"></i> Buat Target
+                </button>
+            </div>
+        </section>
+
+        <!-- Page: Calendar -->
+        <section id="page-calendar" class="page hidden">
+            <div class="card p-4 mb-4">
+                <div class="flex items-center justify-between mb-4">
+                    <button class="btn btn-ghost btn-sm btn-icon" onclick="app.calendar.prevMonth()">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <h2 class="font-bold text-lg" style="color: var(--text-primary)" id="calendar-title">Januari 2025</h2>
+                    <button class="btn btn-ghost btn-sm btn-icon" onclick="app.calendar.nextMonth()">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+
+                <div class="calendar-grid mb-2">
+                    <div class="calendar-header-day">Min</div>
+                    <div class="calendar-header-day">Sen</div>
+                    <div class="calendar-header-day">Sel</div>
+                    <div class="calendar-header-day">Rab</div>
+                    <div class="calendar-header-day">Kam</div>
+                    <div class="calendar-header-day">Jum</div>
+                    <div class="calendar-header-day">Sab</div>
+                </div>
+
+                <div class="calendar-grid" id="calendar-days"></div>
+
+                <div class="flex gap-4 mt-6 justify-center text-xs flex-wrap">
+                    <div class="flex items-center gap-2">
+                        <div class="w-3 h-3 rounded-full" style="background: var(--info)"></div>
+                        <span style="color: var(--text-muted)">Target</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-3 h-3 rounded-full" style="background: var(--danger)"></div>
+                        <span style="color: var(--text-muted)">Deadline</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-3 h-3 border-2 border-purple-500 rounded-full"></div>
+                        <span style="color: var(--text-muted)">Rutin Selesai</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Streak History Heatmap -->
+            <div class="card p-4 mt-4">
+                <h3 class="font-bold text-sm mb-3" style="color: var(--text-primary)">🔥 Riwayat Streak 30 Hari</h3>
+                <div class="flex gap-1 flex-wrap justify-between" id="streak-history"></div>
+            </div>
+        </section>
+
+        <!-- Page: Statistics -->
+        <section id="page-stats" class="page hidden">
+            <!-- Overview -->
+            <div class="card p-4 mb-4">
+                <h3 class="font-bold text-sm mb-4" style="color: var(--text-primary)">📈 Statistik Keseluruhan</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="text-center">
+                        <div class="relative inline-block">
+                            <svg width="100" height="100" class="stat-ring">
+                                <circle cx="50" cy="50" r="40" fill="none" stroke="var(--bg-tertiary)" stroke-width="10"/>
+                                <circle cx="50" cy="50" r="40" fill="none" stroke="var(--success)" stroke-width="10"
+                                    stroke-linecap="round" stroke-dasharray="251" stroke-dashoffset="251" id="completion-ring"/>
+                            </svg>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <span class="text-xl font-bold" style="color: var(--text-primary)" id="completion-percent">0%</span>
+                            </div>
+                        </div>
+                        <div class="text-xs font-semibold mt-2" style="color: var(--text-muted)">Tingkat Selesai</div>
+                    </div>
+                    <div class="space-y-3">
+                        <div>
+                            <div class="flex justify-between text-xs mb-1">
+                                <span style="color: var(--text-muted)">Total Target</span>
+                                <span class="font-bold" style="color: var(--text-primary)" id="stats-total">0</span>
+                            </div>
+                            <div class="h-2 rounded-full overflow-hidden" style="background: var(--bg-tertiary)">
+                                <div class="h-full rounded-full" style="background: var(--primary); width: 100%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs mb-1">
+                                <span style="color: var(--text-muted)">Total Langkah</span>
+                                <span class="font-bold" style="color: var(--text-primary)" id="stats-steps">0</span>
+                            </div>
+                            <div class="h-2 rounded-full overflow-hidden" style="background: var(--bg-tertiary)">
+                                <div class="h-full rounded-full" id="steps-bar" style="background: var(--info); width: 0%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs mb-1">
+                                <span style="color: var(--text-muted)">Langkah Selesai</span>
+                                <span class="font-bold" style="color: var(--success)" id="stats-steps-done">0</span>
+                            </div>
+                            <div class="h-2 rounded-full overflow-hidden" style="background: var(--bg-tertiary)">
+                                <div class="h-full rounded-full" id="steps-done-bar" style="background: var(--success); width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Routine Stats -->
+            <div class="card p-4 mb-4">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-sm" style="color: var(--text-primary)">🌞 Konsistensi Rutinitas</h3>
+                    <span class="text-xs font-bold" style="color: var(--purple)" id="routine-alltime">0 cek</span>
+                </div>
+                <div class="text-center mb-4">
+                    <span class="text-3xl font-bold text-indigo-500" id="routine-consistency">0%</span>
+                    <p class="text-xs" style="color: var(--text-muted)">Tingkat penyelesaian 7 hari terakhir</p>
+                </div>
+                <div class="space-y-3" id="routine-stats-list"></div>
+            </div>
+
+            <!-- Weekly Activity Chart -->
+            <div class="card p-4 mb-4">
+                <h3 class="font-bold text-sm mb-4" style="color: var(--text-primary)">📊 Aktivitas Mingguan</h3>
+                <div class="flex items-end justify-between gap-2 h-32" id="weekly-chart"></div>
+                <div class="flex justify-between mt-2 text-[10px]" style="color: var(--text-muted)">
+                    <span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span><span>Sab</span><span>Min</span>
+                </div>
+            </div>
+
+            <!-- Category Breakdown -->
+            <div class="card p-4 mb-4">
+                <h3 class="font-bold text-sm mb-4" style="color: var(--text-primary)">📂 Per Kategori</h3>
+                <div class="space-y-3" id="category-stats"></div>
+            </div>
+
+            <!-- Priority Breakdown -->
+            <div class="card p-4 mb-4">
+                <h3 class="font-bold text-sm mb-4" style="color: var(--text-primary)">🎯 Per Prioritas</h3>
+                <div class="grid grid-cols-3 gap-3" id="priority-stats"></div>
+            </div>
+        </section>
+
+        <!-- Page: Achievements -->
+        <section id="page-achievements" class="page hidden">
+            <div class="card p-4 mb-4">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold" style="color: var(--text-primary)">
+                        <i class="fas fa-trophy mr-2" style="color: var(--xp-color)"></i>Pencapaian
+                    </h3>
+                    <span class="text-sm font-bold" style="color: var(--xp-color)" id="achievements-count">0/10</span>
+                </div>
+                <div id="achievements-list" class="space-y-2"></div>
+            </div>
+
+            <div class="card p-4">
+                <h3 class="font-bold text-sm mb-3" style="color: var(--text-primary)">
+                    <i class="fas fa-history mr-2"></i>Aktivitas Terbaru
+                </h3>
+                <div id="activity-log" class="space-y-2 max-h-64 overflow-y-auto"></div>
+            </div>
+        </section>
+
+        <!-- Page: Settings -->
+        <section id="page-settings" class="page hidden">
+            <div class="card p-4 mb-4" style="background: linear-gradient(135deg, rgba(142, 84, 233, 0.1) 0%, rgba(71, 118, 230, 0.1) 100%); border-color: var(--ai-color);">
+                <h3 class="font-bold mb-4" style="color: var(--ai-color)">
+                    <i class="fas fa-robot mr-2"></i>Google Gemini AI
+                </h3>
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-semibold mb-1" style="color: var(--text-secondary)">API Key</label>
+                        <input type="password" class="input" id="gemini-key" placeholder="AIzaSy..." style="font-size: 14px;">
+                        <p class="text-[10px]" style="color: var(--text-muted)">Dibutuhkan untuk fitur Magic Plan & Motivation.</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button class="btn btn-ai w-full" onclick="app.settings.saveAIKey()">
+                            <i class="fas fa-save"></i> Simpan
+                        </button>
+                        <button class="btn btn-secondary w-full" onclick="app.ai.testKey()">
+                            <i class="fas fa-vial"></i> Test Key
+                        </button>
+                    </div>
+                    <div class="text-[11px]" style="color: var(--text-muted)">
+                        Tips: pastikan API Key aktif untuk <span class="font-semibold">Generative Language API</span>. Jika gagal, coba generate ulang dan cek limit/quota.
+                    </div>
+                </div>
+            </div>
+
+            <div class="card p-4 mb-4">
+                <h3 class="font-bold mb-4" style="color: var(--text-primary)">
+                    <i class="fab fa-gitlab mr-2" style="color: #fc6d26"></i>Koneksi GitLab
+                </h3>
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-semibold mb-1" style="color: var(--text-secondary)">Access Token</label>
+                        <input type="password" class="input" id="gitlab-token" placeholder="glpat-xxxxxxxxxxxx" style="font-size: 14px;">
+                        <p class="text-[10px]" style="color: var(--text-muted)">Jika token & project diisi, aplikasi akan memuat data langsung dari GitLab.</p>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold mb-1" style="color: var(--text-secondary)">GitLab URL</label>
+                        <input type="url" class="input" id="gitlab-url" placeholder="https://gitlab.com" value="https://gitlab.com" style="font-size: 14px;">
+                    </div>
+                    <button class="btn btn-primary w-full" onclick="app.gitlab.testConnection()">
+                        <i class="fas fa-plug"></i> Test Koneksi
+                    </button>
+                    <div>
+                        <label class="block text-xs font-semibold mb-1" style="color: var(--text-secondary)">Project</label>
+                        <select class="input" id="gitlab-project" style="font-size: 14px;">
+                            <option value="">-- Pilih Project --</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-success w-full" onclick="app.settings.save()">
+                        <i class="fas fa-save"></i> Simpan
+                    </button>
+                </div>
+            </div>
+
+            <div class="card p-4 mb-4">
+                <h3 class="font-bold mb-4" style="color: var(--text-primary)">
+                    <i class="fas fa-database mr-2"></i>Kelola Data
+                </h3>
+                <div class="grid grid-cols-2 gap-2 mb-2">
+                    <button class="btn btn-secondary text-sm" onclick="app.data.exportJSON()">
+                        <i class="fas fa-download"></i> Export
+                    </button>
+                    <button class="btn btn-secondary text-sm" onclick="document.getElementById('import-file').click()">
+                        <i class="fas fa-upload"></i> Import
+                    </button>
+                    <input type="file" id="import-file" class="hidden" accept=".json" onchange="app.data.importJSON(event)">
+                </div>
+                <button class="btn btn-secondary w-full mb-2 text-sm" onclick="app.data.downloadPreset()">
+                    <i class="fas fa-file-code"></i> Download Preset
+                </button>
+                <button class="btn btn-danger w-full text-sm" onclick="app.data.clearAll()">
+                    <i class="fas fa-trash-alt"></i> Hapus Semua Data
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- FAB -->
+    <button class="fab" onclick="app.ui.showPlanModal()" id="fab-add">
+        <i class="fas fa-plus"></i>
+    </button>
+
+    <button class="fab fab-ai" onclick="app.ui.showMagicModal()" id="fab-ai">
+        <i class="fas fa-magic"></i>
+    </button>
+
+    <!-- Bottom Nav -->
+    <nav class="bottom-nav">
+        <div class="nav-item active" data-page="dashboard" onclick="app.ui.switchPage('dashboard')">
+            <i class="fas fa-home"></i>
+            <span>Beranda</span>
+        </div>
+        <div class="nav-item" data-page="calendar" onclick="app.ui.switchPage('calendar')">
+            <i class="fas fa-calendar-alt"></i>
+            <span>Kalender</span>
+        </div>
+        <div class="nav-item" data-page="stats" onclick="app.ui.switchPage('stats')">
+            <i class="fas fa-chart-bar"></i>
+            <span>Statistik</span>
+        </div>
+        <div class="nav-item" data-page="achievements" onclick="app.ui.switchPage('achievements')">
+            <i class="fas fa-trophy"></i>
+            <span>Prestasi</span>
+        </div>
+        <div class="nav-item" data-page="settings" onclick="app.ui.switchPage('settings')">
+            <i class="fas fa-cog"></i>
+            <span>Pengaturan</span>
+        </div>
+    </nav>
+
+    <!-- Modal: Calendar Detail Popup -->
+    <div id="calendar-modal" class="modal" onclick="if(event.target === this) app.calendar.closeModal()">
+        <div class="modal-content p-5">
+            <div class="modal-handle"></div>
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="font-bold text-lg" style="color: var(--text-primary)" id="calendar-modal-title">Tanggal</h2>
+                <button class="btn btn-ghost btn-sm btn-icon" onclick="app.calendar.closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="calendar-modal-list" class="space-y-3 max-h-[65vh] overflow-y-auto"></div>
+        </div>
+    </div>
+
+    <!-- Modal: Routine -->
+    <div id="routine-modal" class="modal" onclick="if(event.target === this) app.ui.closeRoutineModal()">
+        <div class="modal-content p-5">
+            <div class="modal-handle"></div>
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="font-bold text-lg" style="color: var(--text-primary)">Kelola Rutinitas</h2>
+                <button class="btn btn-ghost btn-sm btn-icon" onclick="app.ui.closeRoutineModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div id="routine-management-list" class="space-y-2 mb-4 max-h-44 overflow-y-auto"></div>
+
+            <form id="routine-form" class="space-y-3">
+                <input type="hidden" id="routine-id">
+                <input type="text" class="input" id="routine-title" placeholder="Nama rutinitas (mis: Minum Air)" required>
+                <div>
+                    <label class="block text-xs font-semibold mb-1" style="color: var(--text-secondary)">Icon Emoji</label>
+                    <div class="flex gap-2 overflow-x-auto p-2" id="emoji-selector">
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="document.getElementById('routine-icon').value = '💧'">💧</button>
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="document.getElementById('routine-icon').value = '🏃'">🏃</button>
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="document.getElementById('routine-icon').value = '📚'">📚</button>
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="document.getElementById('routine-icon').value = '🧘'">🧘</button>
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="document.getElementById('routine-icon').value = '💊'">💊</button>
+                        <input type="text" id="routine-icon" class="input w-12 text-center p-0" value="💧" maxlength="2">
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button type="button" class="btn btn-secondary flex-1" onclick="app.ui.resetRoutineForm()">
+                        <i class="fas fa-rotate-left"></i> Reset
+                    </button>
+                    <button type="submit" class="btn btn-primary flex-1" id="routine-submit">
+                        <i class="fas fa-plus"></i> Tambah
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Magic AI -->
+    <div id="magic-modal" class="modal" onclick="if(event.target === this) app.ui.closeMagicModal()">
+        <div class="modal-content p-5">
+            <div class="modal-handle"></div>
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="font-bold text-lg" style="color: var(--ai-color)">✨ Magic Plan Creator</h2>
+                <button class="btn btn-ghost btn-sm btn-icon" onclick="app.ui.closeMagicModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="space-y-3">
+                <p class="text-sm" style="color: var(--text-secondary)">Ketik tujuan Anda, AI akan membuatkan rencana lengkap beserta langkah-langkahnya.</p>
+                <textarea class="input" id="magic-prompt" rows="3" placeholder="Contoh: Saya ingin belajar Python dalam 1 bulan..."></textarea>
+                <button class="btn btn-ai w-full" onclick="app.ai.generatePlan()" id="btn-generate">
+                    <span id="btn-text-generate">Buat Rencana Ajaib</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Create/Edit Plan -->
+    <div id="plan-modal" class="modal" onclick="if(event.target === this) app.ui.closePlanModal()">
+        <div class="modal-content p-5">
+            <div class="modal-handle"></div>
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="font-bold text-lg" style="color: var(--text-primary)" id="modal-title">Target Baru</h2>
+                <button class="btn btn-ghost btn-sm btn-icon" onclick="app.ui.closePlanModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <form id="plan-form" class="space-y-3">
+                <input type="hidden" id="plan-id">
+                <div>
+                    <label class="block text-xs font-semibold mb-1" style="color: var(--text-secondary)">Judul Target *</label>
+                    <input type="text" class="input" id="plan-title" placeholder="Contoh: Belajar React Native" required style="font-size: 14px;">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold mb-1" style="color: var(--text-secondary)">Deskripsi</label>
+                    <textarea class="input" id="plan-desc" rows="2" placeholder="Jelaskan target..." style="font-size: 14px;"></textarea>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-xs font-semibold mb-1" style="color: var(--text-secondary)">Prioritas</label>
+                        <select class="input" id="plan-priority" style="font-size: 14px;">
+                            <option value="low">🟢 Rendah</option>
+                            <option value="medium" selected>🟡 Sedang</option>
+                            <option value="high">🔴 Tinggi</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold mb-1" style="color: var(--text-secondary)">Kategori</label>
+                        <select class="input" id="plan-category" style="font-size: 14px;">
+                            <option value="personal">💪 Personal</option>
+                            <option value="work">💼 Kerja</option>
+                            <option value="learning">📚 Belajar</option>
+                            <option value="project">🚀 Proyek</option>
+                            <option value="health">❤️ Kesehatan</option>
+                            <option value="finance">💰 Keuangan</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold mb-1" style="color: var(--text-secondary)">Target Tanggal</label>
+                    <input type="date" class="input" id="plan-due" style="font-size: 14px;">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold mb-1" style="color: var(--text-secondary)">
+                        Langkah-langkah <span class="font-normal">(+10 XP/langkah)</span>
+                    </label>
+                    <div id="steps-container" class="space-y-2 mb-2"></div>
+                    <button type="button" class="btn btn-secondary w-full text-sm" onclick="app.ui.addStepInput()">
+                        <i class="fas fa-plus"></i> Tambah Langkah
+                    </button>
+                </div>
+                <div class="flex gap-2 pt-2">
+                    <button type="button" class="btn btn-secondary flex-1" onclick="app.ui.closePlanModal()">Batal</button>
+                    <button type="submit" class="btn btn-primary flex-1">
+                        <i class="fas fa-save"></i> Simpan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Global Sync -->
+    <div id="sync-modal" class="modal" onclick="if(event.target === this) app.ui.closeSyncModal()">
+        <div class="modal-content p-5">
+            <div class="modal-handle"></div>
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="font-bold text-lg" style="color: var(--text-primary)">
+                    Sync GitLab
+                </h2>
+                <button class="btn btn-ghost btn-sm btn-icon" onclick="app.ui.closeSyncModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="card p-3 mb-4" style="background: var(--bg-tertiary)">
+                <div class="flex items-center gap-3">
+                    <div class="w-3 h-3 rounded-full" id="connection-dot" style="background: var(--text-muted)"></div>
+                    <div class="flex-1">
+                        <div class="font-semibold text-sm" style="color: var(--text-primary)" id="connection-status">Belum terhubung</div>
+                        <div class="text-xs" style="color: var(--text-muted)" id="connection-project">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-2 mb-4">
+                <button class="btn btn-primary w-full" onclick="app.gitlab.bootstrap(true)">
+                    <i class="fas fa-rotate"></i> Refresh dari GitLab
+                </button>
+                <button class="btn btn-secondary w-full" onclick="app.gitlab.pushAllToGitlab()">
+                    <i class="fas fa-cloud-upload-alt"></i> Push Semua ke GitLab
+                </button>
+            </div>
+
+            <div id="sync-log" class="p-3 rounded-xl text-xs max-h-32 overflow-y-auto" style="background: var(--bg-primary); color: var(--text-secondary)">
+                <p class="text-center" style="color: var(--text-muted)">Log sync akan muncul di sini</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Level Up -->
+    <div id="levelup-modal" class="modal" onclick="app.ui.closeLevelUpModal()">
+        <div class="modal-content p-6 text-center" style="border-radius: 28px; max-width: 320px; margin: auto;">
+            <div class="text-6xl mb-3" id="levelup-icon">🎉</div>
+            <h2 class="font-bold text-xl mb-2" style="color: var(--text-primary)">Level Up!</h2>
+            <p class="text-base mb-3" style="color: var(--text-secondary)">
+                Anda mencapai <span class="font-bold" style="color: var(--xp-color)" id="new-level">Level 2</span>
+            </p>
+            <div class="mb-4">
+                <span class="level-badge" id="new-title">Pembelajar</span>
+            </div>
+            <button class="btn btn-primary w-full" onclick="app.ui.closeLevelUpModal()">
+                <i class="fas fa-rocket"></i> Lanjutkan!
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // PWA Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(() => console.log('SW registered'))
+                    .catch(err => console.log('SW failed', err));
+            });
+        }
+
+        // Global error handler (biar UI tidak "mati" jika ada error)
+        window.addEventListener('error', (e) => {
+            try {
+                if (window.app && window.app.ui) window.app.ui.showToast('Terjadi error UI: ' + (e.message || 'Unknown'), 'error');
+            } catch (_) {}
+        });
+
+        // IMPORTANT: pastikan global app tidak kena TDZ saat inisialisasi
+        // (banyak onclick di HTML mengandalkan variabel global `app`)
+        var app = null;
+
+        // ========== Audio Manager ==========
+        class AudioManager {
+            constructor() { this.ctx = null; }
+            init() { if(!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)(); }
+            playTone(freq, type, duration) {
+                try {
+                    this.init();
+                    if(this.ctx.state === 'suspended') this.ctx.resume();
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = type;
+                    osc.frequency.value = freq;
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start();
+                    gain.gain.exponentialRampToValueAtTime(0.00001, this.ctx.currentTime + duration);
+                    osc.stop(this.ctx.currentTime + duration);
+                } catch(e) { console.log('Audio error', e); }
+            }
+            playSuccess() {
+                this.playTone(500, 'sine', 0.1);
+                setTimeout(() => this.playTone(800, 'sine', 0.2), 100);
+                if(navigator.vibrate) navigator.vibrate(50);
+            }
+            playComplete() {
+                this.playTone(400, 'triangle', 0.1);
+                setTimeout(() => this.playTone(600, 'triangle', 0.1), 100);
+                setTimeout(() => this.playTone(1000, 'triangle', 0.3), 200);
+                if(navigator.vibrate) navigator.vibrate([100, 50, 100]);
+            }
+        }
+
+        // ========== Storage Manager ==========
+        class StorageManager {
+            constructor(prefix = 'pt_') { this.prefix = prefix; }
+            get(key, def = null) {
+                try { return JSON.parse(localStorage.getItem(this.prefix + key)) || def; }
+                catch { return def; }
+            }
+            set(key, val) { localStorage.setItem(this.prefix + key, JSON.stringify(val)); }
+            remove(key) { localStorage.removeItem(this.prefix + key); }
+            clear() { Object.keys(localStorage).filter(k => k.startsWith(this.prefix)).forEach(k => localStorage.removeItem(k)); }
+        }
+
+        // ========== Routine Manager ==========
+        class RoutineManager {
+            constructor(storage, gamification, audio) {
+                this.storage = storage;
+                this.gamification = gamification;
+                this.audio = audio;
+                this.routines = [];
+                this.load();
+            }
+
+            isGitLabMode() {
+                const token = this.storage.get('gitlab_token', '');
+                const project = this.storage.get('gitlab_project', '');
+                return !!(token && project);
+            }
+
+            load() {
+                if (this.isGitLabMode()) {
+                    this.routines = [];
+                } else {
+                    this.routines = this.storage.get('routines', []);
+                }
+            }
+
+            save(opts = {}) {
+                const { skipLocal = false } = opts;
+                if (!this.isGitLabMode() && !skipLocal) this.storage.set('routines', this.routines);
+            }
+
+            add(title, icon) {
+                const routine = {
+                    id: Date.now().toString(36),
+                    title,
+                    icon,
+                    history: [],
+                    streak: 0,
+                    createdAt: new Date().toISOString()
+                };
+                this.routines.push(routine);
+                this.save();
+                app.ui.renderRoutines();
+                app.ui.renderRoutineManagement();
+                app.ui.showToast('Rutinitas ditambahkan!', 'success');
+                if (app.gitlab.isConfigured()) app.gitlab.queueSyncRoutines();
+            }
+
+            update(id, title, icon) {
+                const r = this.routines.find(x => x.id === id);
+                if (!r) return;
+                r.title = title;
+                r.icon = icon;
+                this.save();
+                app.ui.renderRoutines();
+                app.ui.renderRoutineManagement();
+                app.ui.showToast('Rutinitas diperbarui!', 'success');
+                if (app.gitlab.isConfigured()) app.gitlab.queueSyncRoutines();
+            }
+
+            delete(id) {
+                if(confirm('Hapus rutinitas ini?')) {
+                    this.routines = this.routines.filter(r => r.id !== id);
+                    this.save();
+                    app.ui.renderRoutines();
+                    app.ui.renderRoutineManagement();
+                    app.ui.showToast('Rutinitas dihapus', 'info');
+                    if (app.gitlab.isConfigured()) app.gitlab.queueSyncRoutines();
+                }
+            }
+
+            toggle(id, dateISO = null) {
+                const routine = this.routines.find(r => r.id === id);
+                if (!routine) return;
+
+                const date = dateISO ? new Date(dateISO) : new Date();
+                const dayStr = date.toDateString();
+                const todayStr = new Date().toDateString();
+
+                const index = routine.history.indexOf(dayStr);
+
+                if (index === -1) {
+                    routine.history.push(dayStr);
+                    // XP hanya untuk hari ini
+                    if (dayStr === todayStr) {
+                        this.gamification.addXP(10, `Rutin: ${routine.title}`);
+                        this.audio.playSuccess();
+                        app.ui.celebrate();
+                    }
+                } else {
+                    routine.history.splice(index, 1);
+                }
+
+                // Calc streak (berdasarkan hari ini)
+                let streak = 0;
+                let d = new Date();
+                while (routine.history.includes(d.toDateString())) {
+                    streak++;
+                    d.setDate(d.getDate() - 1);
+                }
+                routine.streak = streak;
+
+                this.save();
+                app.ui.renderRoutines();
+                app.ui.updateStats();
+
+                // GitLab routine log: simpan daftar completed id untuk tanggal tsb
+                if (app.gitlab.isConfigured()) {
+                    const completedIds = this.getCompletedRoutineIdsForDate(dayStr);
+                    app.gitlab.queueSyncRoutineLog(date, completedIds);
+                }
+
+                // Update calendar if visible
+                if (!document.getElementById('page-calendar').classList.contains('hidden')) {
+                    app.calendar.render();
+                }
+            }
+
+            toggleAllToday() {
+                const today = new Date().toDateString();
+                if (this.routines.length === 0) return;
+                const allDone = this.routines.every(r => r.history.includes(today));
+                // Jika sudah semua done => uncheck semua
+                this.routines.forEach(r => {
+                    const idx = r.history.indexOf(today);
+                    if (allDone) {
+                        if (idx !== -1) r.history.splice(idx, 1);
+                    } else {
+                        if (idx === -1) r.history.push(today);
+                    }
+                });
+
+                // Recalc streak
+                this.routines.forEach(r => {
+                    let streak = 0;
+                    let d = new Date();
+                    while (r.history.includes(d.toDateString())) {
+                        streak++;
+                        d.setDate(d.getDate() - 1);
+                    }
+                    r.streak = streak;
+                });
+
+                if (!allDone) {
+                    // bonus XP ringan kalau menyelesaikan semua
+                    this.gamification.addXP(10, 'Rutin lengkap hari ini');
+                    this.audio.playSuccess();
+                    app.ui.celebrate();
+                }
+
+                this.save();
+                app.ui.renderRoutines();
+                app.ui.updateStats();
+
+                if (app.gitlab.isConfigured()) {
+                    const completedIds = this.getCompletedRoutineIdsForDate(today);
+                    app.gitlab.queueSyncRoutineLog(new Date(), completedIds);
+                }
+            }
+
+            getCompletedRoutineIdsForDate(dayStr) {
+                return this.routines.filter(r => r.history.includes(dayStr)).map(r => r.id);
+            }
+
+            checkDailyCompletion(date) {
+                const dateStr = date.toDateString();
+                if (this.routines.length === 0) return false;
+                return this.routines.every(r => r.history.includes(dateStr));
+            }
+
+            getStats() {
+                const last7Days = [];
+                for(let i=6; i>=0; i--) {
+                    const d = new Date(); d.setDate(d.getDate() - i);
+                    last7Days.push(d.toDateString());
+                }
+
+                let totalChecks = 0;
+                let possibleChecks = this.routines.length * 7;
+                if(possibleChecks === 0) return { percent: 0, items: [], allTimeChecks: 0 };
+
+                const items = this.routines.map(r => {
+                    const checks = last7Days.filter(day => r.history.includes(day)).length;
+                    totalChecks += checks;
+                    return {
+                        id: r.id,
+                        title: r.title,
+                        icon: r.icon,
+                        rate: Math.round((checks / 7) * 100),
+                        streak: r.streak
+                    };
+                });
+
+                const allTimeChecks = this.routines.reduce((a, r) => a + r.history.length, 0);
+
+                return {
+                    percent: Math.round((totalChecks / possibleChecks) * 100),
+                    items,
+                    allTimeChecks
+                };
+            }
+
+            getTodayProgress() {
+                const today = new Date().toDateString();
+                const total = this.routines.length;
+                const done = this.routines.filter(r => r.history.includes(today)).length;
+                const percent = total === 0 ? 0 : Math.round((done / total) * 100);
+                return { total, done, percent };
+            }
+        }
+
+        // ========== AI Manager ==========
+        class AIManager {
+            constructor(storage) {
+                this.storage = storage;
+                this.apiKey = storage.get('gemini_key', '');
+                this.models = [
+                    'gemini-1.5-flash',
+                    'gemini-1.5-pro'
+                ];
+            }
+
+            setKey(key) {
+                this.apiKey = (key || '').trim();
+            }
+
+            _extractFirstJsonObject(text) {
+                if (!text) return null;
+                // remove code fences
+                let t = String(text).replace(/```json/gi, '```').replace(/```/g, '').trim();
+
+                // If already valid JSON
+                try { return JSON.parse(t); } catch (_) {}
+
+                // Find first {...} block (simple brace matching)
+                const start = t.indexOf('{');
+                if (start === -1) return null;
+                let depth = 0;
+                for (let i = start; i < t.length; i++) {
+                    const ch = t[i];
+                    if (ch === '{') depth++;
+                    else if (ch === '}') depth--;
+                    if (depth === 0) {
+                        const candidate = t.slice(start, i + 1);
+                        try { return JSON.parse(candidate); } catch (_) { return null; }
+                    }
+                }
+                return null;
+            }
+
+            async callGemini(prompt) {
+                if (!this.apiKey) throw new Error('NO_API_KEY');
+
+                let lastErr = null;
+                for (const model of this.models) {
+                    try {
+                        const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${this.apiKey}`;
+                        const response = await fetch(url, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                        });
+
+                        const data = await response.json().catch(() => ({}));
+                        if (!response.ok) {
+                            const msg = data?.error?.message || `HTTP ${response.status}`;
+                            throw new Error(msg);
+                        }
+
+                        const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+                        if (!text) throw new Error('EMPTY_RESPONSE');
+                        return { model, text };
+                    } catch (e) {
+                        lastErr = e;
+                        // try next model
+                    }
+                }
+                throw lastErr || new Error('GEMINI_FAILED');
+            }
+
+            async testKey() {
+                if (!this.apiKey) { app.ui.showToast('Masukkan API Key Gemini dulu', 'error'); return; }
+                app.ui.showToast('Testing Gemini API...', 'info');
+                try {
+                    const { model, text } = await this.callGemini('Balas dengan satu kata: OK');
+                    const ok = (text || '').toLowerCase().includes('ok');
+                    app.ui.showToast(ok ? `Gemini OK (${model})` : `Terhubung (${model})`, 'success');
+                } catch (e) {
+                    console.error(e);
+                    const msg = (e && e.message) ? e.message : 'Gagal';
+                    app.ui.showToast(`Test gagal: ${msg}`, 'error');
+                }
+            }
+
+            async generatePlan() {
+                const promptText = document.getElementById('magic-prompt').value;
+                if (!promptText) { app.ui.showToast('Tuliskan tujuanmu dulu!', 'error'); return; }
+                if (!this.apiKey) { app.ui.showToast('Masukkan API Key Gemini di Pengaturan', 'error'); return; }
+
+                const btn = document.getElementById('btn-generate');
+                const btnText = document.getElementById('btn-text-generate');
+                const originalText = btnText.innerText;
+
+                btnText.innerHTML = '<div class="ai-loading"><span></span><span></span><span></span></div>';
+                btn.disabled = true;
+
+                const prompt = `Kamu adalah asisten perencana. Buatkan rencana kegiatan dalam format JSON valid untuk tujuan ini: "${promptText}".\n\nKETENTUAN:\n- Output HARUS JSON valid saja, tanpa markdown, tanpa komentar, tanpa teks lain.\n- Field: title (string), description (string), category (personal|work|learning|project|health|finance), priority (low|medium|high), steps (array of string).\n- steps minimal 5 item, maksimal 12 item.`;
+
+                try {
+                    const { text } = await this.callGemini(prompt);
+                    const plan = this._extractFirstJsonObject(text);
+                    if (!plan) throw new Error('Tidak bisa parse JSON dari AI. Coba ulang.');
+
+                    app.ui.closeMagicModal();
+                    app.ui.showPlanModal();
+
+                    setTimeout(() => {
+                        document.getElementById('plan-title').value = plan.title || '';
+                        document.getElementById('plan-desc').value = plan.description || '';
+                        document.getElementById('plan-category').value = plan.category || 'personal';
+                        document.getElementById('plan-priority').value = plan.priority || 'medium';
+                        document.getElementById('steps-container').innerHTML = '';
+                        (plan.steps || []).forEach(s => app.ui.addStepInput(String(s || '')));
+                    }, 250);
+
+                    app.ui.showToast('✨ Rencana AI siap!', 'success');
+                } catch (err) {
+                    console.error(err);
+                    const msg = (err && err.message) ? err.message : 'Gagal';
+                    app.ui.showToast(`Gagal generate AI: ${msg}`, 'error');
+                } finally {
+                    btnText.innerText = originalText;
+                    btn.disabled = false;
+                }
+            }
+
+            async generateQuote() {
+                if (!this.apiKey) { app.ui.showToast('Masukkan API Key Gemini dulu', 'error'); return; }
+                app.ui.showToast('Meminta motivasi...', 'info');
+                try {
+                    const prompt = 'Berikan satu kutipan motivasi singkat (maks 20 kata) dalam bahasa Indonesia beserta nama tokohnya. Format: Kutipan - Tokoh';
+                    const { text } = await this.callGemini(prompt);
+                    const raw = (text || '').trim();
+                    const parts = raw.split('-');
+                    if (parts.length >= 1) {
+                        document.getElementById('daily-quote').textContent = `"${(parts[0] || '').trim()}"`;
+                        if (parts[1]) document.getElementById('quote-author').textContent = `- ${(parts[1] || '').trim()}`;
+                    }
+                } catch (e) {
+                    console.error(e);
+                    const msg = (e && e.message) ? e.message : 'Gagal';
+                    app.ui.showToast(`Gagal memuat quote: ${msg}`, 'error');
+                }
+            }
+        }
+
+        // ========== Gamification Manager ==========
+        class GamificationManager {
+            constructor(storage) {
+                this.storage = storage;
+                this.xp = storage.get('xp', 0);
+                this.level = storage.get('level', 1);
+                this.achievements = storage.get('achievements', []);
+
+                this.levels = [
+                    { level: 1, xp: 0, title: 'Pemula', icon: '🌱' },
+                    { level: 2, xp: 100, title: 'Pembelajar', icon: '📚' },
+                    { level: 3, xp: 250, title: 'Pekerja Keras', icon: '💪' },
+                    { level: 4, xp: 500, title: 'Achiever', icon: '🎯' },
+                    { level: 5, xp: 800, title: 'Master Planner', icon: '🏆' },
+                    { level: 6, xp: 1200, title: 'Legenda', icon: '👑' },
+                    { level: 7, xp: 1800, title: 'Sang Juara', icon: '⭐' },
+                    { level: 8, xp: 2500, title: 'Pahlawan', icon: '🦸' },
+                    { level: 9, xp: 3500, title: 'Dewa Produktivitas', icon: '🔥' },
+                    { level: 10, xp: 5000, title: 'Sang Pencipta', icon: '✨' }
+                ];
+
+                this.achievementDefs = [
+                    { id: 'first_plan', title: 'Langkah Pertama', desc: 'Buat target pertama', icon: '🎯', xp: 20 },
+                    { id: 'first_complete', title: 'Misi Selesai', desc: 'Selesaikan target pertama', icon: '✅', xp: 30 },
+                    { id: 'streak_3', title: 'On Fire', desc: 'Streak 3 hari', icon: '🔥', xp: 50 },
+                    { id: 'streak_7', title: 'Konsisten', desc: 'Streak 7 hari', icon: '💎', xp: 100 },
+                    { id: 'plans_5', title: 'Perencana', desc: 'Buat 5 target', icon: '📋', xp: 40 },
+                    { id: 'plans_10', title: 'Ambisius', desc: 'Buat 10 target', icon: '🚀', xp: 80 },
+                    { id: 'complete_5', title: 'Produktif', desc: 'Selesaikan 5 target', icon: '🏅', xp: 100 },
+                    { id: 'steps_10', title: 'Tekun', desc: 'Selesaikan 10 langkah', icon: '👟', xp: 50 },
+                    { id: 'steps_50', title: 'Maraton', desc: 'Selesaikan 50 langkah', icon: '🏃', xp: 150 },
+                    { id: 'gitlab_sync', title: 'Connected', desc: 'Sync dengan GitLab', icon: '🔗', xp: 30 }
+                ];
+            }
+
+            addXP(amount, reason) {
+                this.xp += amount;
+                this.storage.set('xp', this.xp);
+                if (window.app && window.app.ui) window.app.ui.showXPPopup(amount);
+                this.checkLevelUp();
+                this.updateUI();
+            }
+
+            checkLevelUp() {
+                const oldLevel = this.level;
+                for (let i = this.levels.length - 1; i >= 0; i--) {
+                    if (this.xp >= this.levels[i].xp) { this.level = this.levels[i].level; break; }
+                }
+                if (this.level > oldLevel) {
+                    this.storage.set('level', this.level);
+                    const lvl = this.levels.find(l => l.level === this.level);
+                    if (window.app && window.app.ui) window.app.ui.showLevelUp(this.level, lvl.title, lvl.icon);
+                }
+            }
+
+            unlock(achievementId) {
+                if (this.achievements.includes(achievementId)) return;
+                const ach = this.achievementDefs.find(a => a.id === achievementId);
+                if (!ach) return;
+                this.achievements.push(achievementId);
+                this.storage.set('achievements', this.achievements);
+                this.addXP(ach.xp, ach.title);
+                if (window.app && window.app.ui) window.app.ui.showToast(`🏆 ${ach.title} unlocked! +${ach.xp} XP`, 'xp');
+            }
+
+            checkAchievements(stats, streak) {
+                if (stats.total >= 1) this.unlock('first_plan');
+                if (stats.completed >= 1) this.unlock('first_complete');
+                if (stats.total >= 5) this.unlock('plans_5');
+                if (stats.total >= 10) this.unlock('plans_10');
+                if (stats.completed >= 5) this.unlock('complete_5');
+                if (stats.completedSteps >= 10) this.unlock('steps_10');
+                if (stats.completedSteps >= 50) this.unlock('steps_50');
+                if (streak >= 3) this.unlock('streak_3');
+                if (streak >= 7) this.unlock('streak_7');
+            }
+
+            getCurrentLevel() { return this.levels.find(l => l.level === this.level); }
+            getNextLevel() { return this.levels.find(l => l.level === this.level + 1); }
+
+            getProgress() {
+                const current = this.getCurrentLevel();
+                const next = this.getNextLevel();
+                if (!next) return 100;
+                return Math.round(((this.xp - current.xp) / (next.xp - current.xp)) * 100);
+            }
+
+            updateUI() {
+                const current = this.getCurrentLevel();
+                const next = this.getNextLevel();
+                document.getElementById('user-level').textContent = this.level;
+                document.getElementById('user-xp').textContent = this.xp;
+                document.getElementById('level-title').textContent = current.title;
+                document.getElementById('xp-bar-fill').style.width = this.getProgress() + '%';
+                document.getElementById('xp-current').textContent = this.xp + ' XP';
+                document.getElementById('xp-next').textContent = next ? `${next.xp - this.xp} XP untuk level up` : 'Max Level!';
+            }
+        }
+
+        // ========== Theme Manager ==========
+        class ThemeManager {
+            constructor(storage) {
+                this.storage = storage;
+                this.init();
+            }
+            init() {
+                const saved = this.storage.get('theme', window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+                this.set(saved);
+            }
+            set(theme) {
+                document.body.setAttribute('data-theme', theme);
+                this.storage.set('theme', theme);
+                document.getElementById('theme-icon').className = theme === 'dark' ? 'fas fa-sun text-lg' : 'fas fa-moon text-lg';
+            }
+            toggle() { this.set(document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }
+        }
+
+        // ========== Plan Manager ==========
+        class PlanManager {
+            constructor(storage, gamification, audio) {
+                this.storage = storage;
+                this.gamification = gamification;
+                this.audio = audio;
+                this.plans = [];
+                this.expandedId = null;
+                this.load();
+            }
+
+            isGitLabMode() {
+                const token = this.storage.get('gitlab_token', '');
+                const project = this.storage.get('gitlab_project', '');
+                return !!(token && project);
+            }
+
+            genId() { return Date.now().toString(36) + Math.random().toString(36).substr(2, 5); }
+
+            load() {
+                if (this.isGitLabMode()) this.plans = [];
+                else this.plans = this.storage.get('plans', []);
+            }
+
+            save(opts = {}) {
+                const { skipStreak = false, skipLocal = false } = opts;
+                if (!this.isGitLabMode() && !skipLocal) this.storage.set('plans', this.plans);
+                if (!skipStreak) this.updateStreak();
+            }
+
+            add(data) {
+                const plan = {
+                    id: data.id || this.genId(),
+                    title: data.title,
+                    description: data.description || '',
+                    priority: data.priority || 'medium',
+                    category: data.category || 'personal',
+                    dueDate: data.dueDate || null,
+                    steps: data.steps || [],
+                    completed: data.completed || false,
+                    createdAt: data.createdAt || new Date().toISOString(),
+                    completedAt: data.completedAt || null,
+                    gitlabIid: data.gitlabIid || null
+                };
+                this.plans.unshift(plan);
+                this.save();
+                this.logActivity('create', plan.title);
+                this.gamification.addXP(15, 'Membuat target baru');
+                this.audio.playSuccess();
+
+                // Auto sync if GitLab configured
+                if (app.gitlab.isConfigured()) app.gitlab.queueSyncPlan(plan.id);
+                return plan;
+            }
+
+            update(id, data) {
+                const idx = this.plans.findIndex(p => p.id === id);
+                if (idx !== -1) {
+                    this.plans[idx] = { ...this.plans[idx], ...data };
+                    this.save();
+                    this.logActivity('update', this.plans[idx].title);
+                    if (app.gitlab.isConfigured()) app.gitlab.queueSyncPlan(id);
+                }
+            }
+
+            delete(id) {
+                const plan = this.getById(id);
+                if (!plan) return;
+                if (confirm(`Hapus "${plan.title}"?`)) {
+                    this.plans = this.plans.filter(p => p.id !== id);
+                    this.save();
+                    this.logActivity('delete', plan.title);
+                    app.ui.showToast('Target dihapus', 'info');
+                    app.ui.renderPlans();
+                    app.ui.updateStats();
+
+                    if (app.gitlab.isConfigured() && plan.gitlabIid) {
+                        app.gitlab.deletePlanRemote(plan).catch(() => {});
+                    }
+                }
+            }
+
+            getById(id) { return this.plans.find(p => p.id === id); }
+
+            toggleStep(planId, stepId) {
+                const plan = this.getById(planId);
+                if (!plan) return;
+                const step = plan.steps.find(s => s.id === stepId);
+                if (step) {
+                    const wasCompleted = step.completed;
+                    step.completed = !step.completed;
+                    if (step.completed && !wasCompleted) {
+                        this.gamification.addXP(10, 'Menyelesaikan langkah');
+                        this.logActivity('step', step.text);
+                        this.incrementTodaySteps();
+                        this.audio.playSuccess();
+                    }
+                    if (plan.steps.length > 0 && plan.steps.every(s => s.completed)) {
+                        if (!plan.completed) {
+                            plan.completed = true;
+                            plan.completedAt = new Date().toISOString();
+                            app.ui.celebrate();
+                            this.gamification.addXP(50, 'Target selesai!');
+                            this.logActivity('complete', plan.title);
+                            app.ui.showToast('🎉 Target selesai! +50 XP', 'success');
+                            this.audio.playComplete();
+                        }
+                    } else {
+                        plan.completed = false;
+                        plan.completedAt = null;
+                    }
+                    this.save();
+                    app.ui.renderPlans();
+                    app.ui.updateStats();
+
+                    if (app.gitlab.isConfigured()) app.gitlab.queueSyncPlan(planId, 900);
+                }
+            }
+
+            toggleComplete(id) {
+                const plan = this.getById(id);
+                if (!plan) return;
+                plan.completed = !plan.completed;
+                plan.completedAt = plan.completed ? new Date().toISOString() : null;
+                if (plan.completed) {
+                    plan.steps.forEach(s => s.completed = true);
+                    app.ui.celebrate();
+                    this.gamification.addXP(50, 'Target selesai!');
+                    this.logActivity('complete', plan.title);
+                    this.audio.playComplete();
+                }
+                this.save();
+                app.ui.renderPlans();
+                app.ui.updateStats();
+                app.ui.showToast(plan.completed ? '🎉 Target selesai! +50 XP' : 'Target dibuka kembali', 'success');
+
+                if (app.gitlab.isConfigured()) app.gitlab.queueSyncPlan(id, 700);
+            }
+
+            getProgress(plan) {
+                if (plan.steps.length === 0) return plan.completed ? 100 : 0;
+                return Math.round((plan.steps.filter(s => s.completed).length / plan.steps.length) * 100);
+            }
+
+            getStatus(plan) {
+                if (plan.completed) return 'completed';
+                if (plan.steps.some(s => s.completed)) return 'progress';
+                return 'planning';
+            }
+
+            getStats() {
+                const total = this.plans.length;
+                const completed = this.plans.filter(p => p.completed).length;
+                const inProgress = this.plans.filter(p => !p.completed && p.steps.some(s => s.completed)).length;
+                const planning = total - completed - inProgress;
+                const totalSteps = this.plans.reduce((a, p) => a + p.steps.length, 0);
+                const completedSteps = this.plans.reduce((a, p) => a + p.steps.filter(s => s.completed).length, 0);
+                return { total, completed, inProgress, planning, totalSteps, completedSteps };
+            }
+
+            updateStreak() {
+                const today = new Date().toDateString();
+                const lastActive = this.storage.get('last_active', null);
+                let streak = this.storage.get('streak', 0);
+                let streakDays = this.storage.get('streak_days', []);
+
+                if (lastActive !== today) {
+                    const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
+                    streak = lastActive === yesterday.toDateString() ? streak + 1 : 1;
+                    this.storage.set('last_active', today);
+                    this.storage.set('streak', streak);
+                    if (!streakDays.includes(today)) {
+                        streakDays.push(today);
+                        this.storage.set('streak_days', streakDays.slice(-60));
+                    }
+                }
+                document.getElementById('streak-count').textContent = streak;
+                this.gamification.checkAchievements(this.getStats(), streak);
+            }
+
+            incrementTodaySteps() {
+                const today = new Date().toDateString();
+                const data = this.storage.get('today_steps', { date: today, count: 0 });
+                if (data.date !== today) { data.date = today; data.count = 0; }
+                data.count++;
+                this.storage.set('today_steps', data);
+            }
+
+            logActivity(type, title) {
+                const activities = this.storage.get('activities', []);
+                activities.unshift({ type, title, timestamp: new Date().toISOString() });
+                this.storage.set('activities', activities.slice(0, 100));
+            }
+
+            getActivities() { return this.storage.get('activities', []); }
+
+            getWeeklyActivity() {
+                const activities = this.getActivities();
+                const result = [0, 0, 0, 0, 0, 0, 0];
+                const today = new Date();
+                activities.forEach(a => {
+                    const d = new Date(a.timestamp);
+                    const diff = Math.floor((today - d) / (1000 * 60 * 60 * 24));
+                    if (diff < 7) {
+                        const dayIdx = (d.getDay() + 6) % 7;
+                        result[dayIdx]++;
+                    }
+                });
+                return result;
+            }
+
+            getCategoryStats() {
+                const cats = {};
+                this.plans.forEach(p => {
+                    if (!cats[p.category]) cats[p.category] = { total: 0, completed: 0 };
+                    cats[p.category].total++;
+                    if (p.completed) cats[p.category].completed++;
+                });
+                return cats;
+            }
+
+            getPriorityStats() {
+                const stats = { high: { total: 0, completed: 0 }, medium: { total: 0, completed: 0 }, low: { total: 0, completed: 0 } };
+                this.plans.forEach(p => {
+                    stats[p.priority].total++;
+                    if (p.completed) stats[p.priority].completed++;
+                });
+                return stats;
+            }
+        }
+
+        // ========== Calendar Manager ==========
+        class CalendarManager {
+            constructor(storage, plans, routines) {
+                this.storage = storage;
+                this.plans = plans;
+                this.routines = routines;
+                this.currentDate = new Date();
+                this.selectedDate = new Date();
+            }
+
+            render() {
+                const year = this.currentDate.getFullYear();
+                const month = this.currentDate.getMonth();
+                const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+                document.getElementById('calendar-title').textContent = `${months[month]} ${year}`;
+
+                const firstDay = new Date(year, month, 1);
+                const lastDay = new Date(year, month + 1, 0);
+                const startDay = (firstDay.getDay() + 6) % 7;
+                const today = new Date(); today.setHours(0, 0, 0, 0);
+                const streakDays = this.storage.get('streak_days', []);
+
+                let html = '';
+                const prevMonthDays = new Date(year, month, 0).getDate();
+                for (let i = startDay - 1; i >= 0; i--) {
+                    html += `<div class="calendar-day other-month">${prevMonthDays - i}</div>`;
+                }
+
+                for (let day = 1; day <= lastDay.getDate(); day++) {
+                    const date = new Date(year, month, day);
+                    const dateStr = date.toDateString();
+                    const isToday = date.getTime() === today.getTime();
+                    const hasTask = this.plans.plans.some(p => new Date(p.createdAt).toDateString() === dateStr);
+                    const hasDeadline = this.plans.plans.some(p => p.dueDate && new Date(p.dueDate).toDateString() === dateStr && !p.completed);
+                    const isStreak = streakDays.includes(dateStr);
+                    const hasCompleted = this.plans.plans.some(p => p.completedAt && new Date(p.completedAt).toDateString() === dateStr);
+                    const allRoutinesDone = this.routines.checkDailyCompletion(date);
+
+                    let classes = 'calendar-day';
+                    if (isToday) classes += ' today';
+                    if (hasDeadline) classes += ' has-deadline';
+                    else if (hasTask) classes += ' has-task';
+                    if (isStreak) classes += ' streak';
+                    if (hasCompleted) classes += ' completed';
+                    if (allRoutinesDone) classes += ' all-routines-done';
+
+                    html += `<div class="${classes}" onclick="app.calendar.selectDate(${year}, ${month}, ${day})">${day}</div>`;
+                }
+
+                const remaining = 42 - (startDay + lastDay.getDate());
+                for (let i = 1; i <= remaining; i++) {
+                    html += `<div class="calendar-day other-month">${i}</div>`;
+                }
+
+                document.getElementById('calendar-days').innerHTML = html;
+                this.renderStreakHistory();
+            }
+
+            selectDate(year, month, day) {
+                this.selectedDate = new Date(year, month, day);
+                const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+                document.getElementById('calendar-modal-title').textContent = this.selectedDate.toLocaleDateString('id-ID', options);
+
+                const dateStr = this.selectedDate.toDateString();
+
+                const plans = this.plans.plans.filter(p => {
+                    const created = new Date(p.createdAt).toDateString() === dateStr;
+                    const due = p.dueDate && new Date(p.dueDate).toDateString() === dateStr;
+                    const completed = p.completedAt && new Date(p.completedAt).toDateString() === dateStr;
+                    return created || due || completed;
+                });
+
+                const routines = this.routines.routines;
+                const totalR = routines.length;
+                const doneR = routines.filter(r => r.history.includes(dateStr)).length;
+                const routineHtml = totalR === 0
+                    ? `<div class="p-3 text-xs text-center" style="color: var(--text-muted)">Belum ada rutinitas</div>`
+                    : `
+                        <div class="card p-3" style="background: var(--bg-tertiary)">
+                            <div class="flex items-center justify-between">
+                                <div class="font-bold text-xs" style="color: var(--text-primary)">🌞 Rutinitas</div>
+                                <div class="text-xs font-bold" style="color: var(--purple)">${doneR}/${totalR}</div>
+                            </div>
+                            <div class="space-y-2 mt-2">
+                                ${routines.map(r => {
+                                    const done = r.history.includes(dateStr);
+                                    return `
+                                        <div class="flex items-center gap-3 p-2 rounded-xl" style="background: var(--bg-secondary)" onclick="event.stopPropagation(); app.routines.toggle('${r.id}', '${this.selectedDate.toISOString()}')">
+                                            <div class="w-9 h-9 rounded-xl flex items-center justify-center" style="background: ${done ? 'rgba(16,185,129,0.15)' : 'var(--bg-tertiary)'}; color: ${done ? 'var(--success)' : 'var(--text-primary)'}">
+                                                ${done ? '<i class=\"fas fa-check\"></i>' : `<span style=\"font-size:18px\">${r.icon}</span>`}
+                                            </div>
+                                            <div class="flex-1 min-w-0">
+                                                <div class="text-xs font-semibold truncate" style="color: var(--text-primary)">${r.title}</div>
+                                                <div class="text-[10px]" style="color: var(--text-muted)">Streak: ${r.streak} hari</div>
+                                            </div>
+                                            <i class="fas fa-chevron-right" style="color: var(--text-muted); font-size: 12px"></i>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>
+                    `;
+
+                const container = document.getElementById('calendar-modal-list');
+                let plansHtml = '';
+                if (plans.length === 0) {
+                    plansHtml = `<div class="p-4 text-center text-sm" style="color: var(--text-muted)">Tidak ada target di tanggal ini</div>`;
+                } else {
+                    plansHtml = plans.map(p => `
+                        <div class="card p-3 flex items-center gap-3" onclick="app.calendar.closeModal(); app.ui.switchPage('dashboard'); setTimeout(() => app.ui.toggleExpand('${p.id}'), 250)">
+                            <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg" style="background: var(--bg-tertiary)">
+                                ${p.completed ? '✅' : app.ui.categoryEmojis[p.category]}
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="font-semibold text-sm truncate" style="color: var(--text-primary)">${p.title}</div>
+                                <div class="text-xs" style="color: var(--text-muted)">${app.plans.getProgress(p)}% selesai</div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+
+                container.innerHTML = `
+                    ${routineHtml}
+                    <div class="mt-3">
+                        <div class="font-bold text-xs mb-2" style="color: var(--text-primary)">🎯 Target</div>
+                        <div class="space-y-2">${plansHtml}</div>
+                    </div>
+                `;
+
+                document.getElementById('calendar-modal').classList.add('active');
+            }
+
+            closeModal() { document.getElementById('calendar-modal').classList.remove('active'); }
+
+            renderStreakHistory() {
+                const streakDays = this.storage.get('streak_days', []).slice(-30);
+                const today = new Date();
+                let html = '';
+                for (let i = 29; i >= 0; i--) {
+                    const d = new Date(today); d.setDate(d.getDate() - i);
+                    const isStreak = streakDays.includes(d.toDateString());
+                    html += `<div class="w-4 h-4 rounded" style="background: ${isStreak ? 'var(--xp-color)' : 'var(--bg-tertiary)'}" title="${d.toLocaleDateString('id-ID')}"></div>`;
+                }
+                document.getElementById('streak-history').innerHTML = html;
+            }
+
+            prevMonth() { this.currentDate.setMonth(this.currentDate.getMonth() - 1); this.render(); }
+            nextMonth() { this.currentDate.setMonth(this.currentDate.getMonth() + 1); this.render(); }
+        }
+
+        // ========== GitLab API ==========
+        class GitLabAPI {
+            constructor(storage) {
+                this.storage = storage;
+                this.syncTimers = new Map();
+                this.routineTimer = null;
+                this.routineLogTimer = null;
+                this.routineIssueIid = null;
+                this.init();
+            }
+
+            init() {
+                this.baseUrl = this.storage.get('gitlab_url', 'https://gitlab.com');
+                this.token = this.storage.get('gitlab_token', '');
+                this.projectId = this.storage.get('gitlab_project', '');
+            }
+
+            isConfigured() { return !!(this.token && this.projectId); }
+
+            formatTitle(type, title) {
+                const prefixes = {
+                    target: '[PT][TARGET] ',
+                    routines: '[PT][ROUTINES] '
+                };
+                const prefix = prefixes[type] || '[PT] ';
+                if (title.startsWith(prefix)) return title;
+                return prefix + title;
+            }
+
+            stripTitle(type, title) {
+                const prefixes = {
+                    target: '[PT][TARGET] ',
+                    routines: '[PT][ROUTINES] '
+                };
+                const prefix = prefixes[type] || '';
+                return prefix && title.startsWith(prefix) ? title.slice(prefix.length) : title;
+            }
+
+            async fetchRes(endpoint, opts = {}) {
+                const res = await fetch(`${this.baseUrl}/api/v4${endpoint}`, {
+                    ...opts,
+                    headers: { 'PRIVATE-TOKEN': this.token, 'Content-Type': 'application/json', ...opts.headers }
+                });
+                if (!res.ok) throw new Error(`GitLab Error: ${res.status}`);
+                return res;
+            }
+
+            async request(endpoint, opts = {}) {
+                const res = await this.fetchRes(endpoint, opts);
+                return res.json();
+            }
+
+            async requestAllPages(endpoint, maxPages = 10) {
+                let page = 1;
+                let all = [];
+                while (page <= maxPages) {
+                    const join = endpoint.includes('?') ? '&' : '?';
+                    const res = await this.fetchRes(`${endpoint}${join}per_page=100&page=${page}`);
+                    const data = await res.json();
+                    all.push(...data);
+                    const next = res.headers.get('x-next-page');
+                    if (!next) break;
+                    page = parseInt(next, 10);
+                    if (!page) break;
+                }
+                return all;
+            }
+
+            log(msg) {
+                const log = document.getElementById('sync-log');
+                if (!log) return;
+                log.innerHTML += `<div>[${new Date().toLocaleTimeString('id-ID')}] ${msg}</div>`;
+                log.scrollTop = log.scrollHeight;
+            }
+
+            updateStatus() {
+                const dot = document.getElementById('connection-dot');
+                const status = document.getElementById('connection-status');
+                const project = document.getElementById('connection-project');
+                if (!dot || !status || !project) return;
+
+                if (this.token && this.projectId) {
+                    dot.style.background = 'var(--success)';
+                    status.textContent = 'Terhubung (GitLab Mode)';
+                    const sel = document.getElementById('gitlab-project');
+                    project.textContent = sel?.options?.[sel.selectedIndex]?.text || this.projectId;
+                } else if (this.token) {
+                    dot.style.background = 'var(--warning)';
+                    status.textContent = 'Pilih project';
+                    project.textContent = '-';
+                } else {
+                    dot.style.background = 'var(--text-muted)';
+                    status.textContent = 'Belum dikonfigurasi';
+                    project.textContent = '-';
+                }
+            }
+
+            async testConnection() {
+                this.token = document.getElementById('gitlab-token').value.trim();
+                this.baseUrl = document.getElementById('gitlab-url').value.trim() || 'https://gitlab.com';
+                if (!this.token) { app.ui.showToast('Masukkan access token', 'error'); return false; }
+                try {
+                    const user = await this.request('/user');
+                    app.ui.showToast(`Terhubung: ${user.username}`, 'success');
+                    await this.loadProjects();
+                    return true;
+                } catch (err) {
+                    app.ui.showToast('Gagal terhubung', 'error');
+                    return false;
+                }
+            }
+
+            async loadProjects() {
+                try {
+                    const projects = await this.request('/projects?membership=true&per_page=100&order_by=last_activity_at');
+                    const select = document.getElementById('gitlab-project');
+                    select.innerHTML = '<option value="">-- Pilih Project --</option>';
+                    projects.forEach(p => {
+                        const opt = document.createElement('option');
+                        opt.value = p.id;
+                        opt.textContent = p.path_with_namespace;
+                        if (p.id == this.projectId) opt.selected = true;
+                        select.appendChild(opt);
+                    });
+                } catch (err) {
+                    console.error('Load projects failed:', err);
+                }
+            }
+
+            planToMarkdown(plan) {
+                let md = plan.description ? `${plan.description}\n\n` : '';
+                md += '## 📋 Langkah-langkah\n\n';
+                plan.steps.forEach(step => { md += `- [${step.completed ? 'x' : ' '}] ${step.text}\n`; });
+                md += `\n---\n**Kategori:** ${plan.category} | **Progress:** ${app.plans.getProgress(plan)}%\n`;
+                md += `**PlanTracker ID:** \`${plan.id}\``;
+                return md;
+            }
+
+            getPlanLabels(plan) {
+                return [
+                    'plantracker',
+                    'type::target',
+                    `priority::${plan.priority}`,
+                    `category::${plan.category}`,
+                    plan.completed ? 'status::completed' : (plan.steps.some(s => s.completed) ? 'status::progress' : 'status::planning')
+                ].filter(Boolean);
+            }
+
+            async ensureRoutineIssue() {
+                if (this.routineIssueIid) return this.routineIssueIid;
+                const issues = await this.requestAllPages(`/projects/${this.projectId}/issues?state=all&labels=plantracker`);
+                const routineIssue = issues.find(i => (i.title || '').startsWith('[PT][ROUTINES]') || (i.labels || []).includes('type::routine'));
+                if (routineIssue) {
+                    this.routineIssueIid = routineIssue.iid;
+                    return this.routineIssueIid;
+                }
+
+                const desc = this.routinesToDescription(app.routines.routines);
+                const created = await this.request(`/projects/${this.projectId}/issues`, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        title: this.formatTitle('routines', 'Daily Routine Tracker'),
+                        description: desc,
+                        labels: ['plantracker', 'type::routine'].join(',')
+                    })
+                });
+                this.routineIssueIid = created.iid;
+                this.log('🧩 Routine issue dibuat');
+                return this.routineIssueIid;
+            }
+
+            routinesToDescription(routines) {
+                const payload = {
+                    version: '1.0',
+                    routines: routines.map(r => ({ id: r.id, title: r.title, icon: r.icon, createdAt: r.createdAt || null }))
+                };
+                return [
+                    'PlanTracker Routine Tracker (AUTO-GENERATED)\n',
+                    'Cara pakai:',
+                    '- Jangan hapus tag BEGIN/END (dipakai untuk parsing).',
+                    '- Log harian disimpan via comments (notes) agar tidak kena limit deskripsi.\n',
+                    'PT_ROUTINES_JSON_BEGIN',
+                    JSON.stringify(payload),
+                    'PT_ROUTINES_JSON_END'
+                ].join('\n');
+            }
+
+            parseRoutinesFromDescription(desc) {
+                const m = (desc || '').match(/PT_ROUTINES_JSON_BEGIN\s*([\s\S]*?)\s*PT_ROUTINES_JSON_END/);
+                if (!m) return [];
+                try {
+                    const obj = JSON.parse((m[1] || '').trim());
+                    return Array.isArray(obj.routines) ? obj.routines : [];
+                } catch {
+                    return [];
+                }
+            }
+
+            async syncRoutinesDefinitions() {
+                if (!this.isConfigured()) return;
+                const iid = await this.ensureRoutineIssue();
+                const desc = this.routinesToDescription(app.routines.routines);
+                await this.request(`/projects/${this.projectId}/issues/${iid}`, {
+                    method: 'PUT',
+                    body: JSON.stringify({
+                        title: this.formatTitle('routines', 'Daily Routine Tracker'),
+                        description: desc,
+                        labels: ['plantracker', 'type::routine'].join(',')
+                    })
+                });
+                this.log('🧩 Routine definitions diupdate');
+            }
+
+            async upsertRoutineLog(dateObj, completedIds) {
+                if (!this.isConfigured()) return;
+                const iid = await this.ensureRoutineIssue();
+
+                const yyyyMmDd = dateObj.toISOString().split('T')[0];
+                const prefix = `PT_ROUTINE_LOG|${yyyyMmDd}|`;
+                const csv = (completedIds || []).join(',');
+
+                // cari note existing
+                const notes = await this.requestAllPages(`/projects/${this.projectId}/issues/${iid}/notes?sort=desc`);
+                const found = notes.find(n => (n.body || '').startsWith(prefix));
+
+                const body = `${prefix}${csv}\n\n✅ ${yyyyMmDd}: ${completedIds.length} rutin selesai`;
+
+                if (found) {
+                    await this.request(`/projects/${this.projectId}/issues/${iid}/notes/${found.id}`, {
+                        method: 'PUT',
+                        body: JSON.stringify({ body })
+                    });
+                    this.log(`📝 Update routine log ${yyyyMmDd}`);
+                } else {
+                    await this.request(`/projects/${this.projectId}/issues/${iid}/notes`, {
+                        method: 'POST',
+                        body: JSON.stringify({ body })
+                    });
+                    this.log(`📝 Tulis routine log ${yyyyMmDd}`);
+                }
+            }
+
+            async pullRoutinesFromGitlab(issues) {
+                const routineIssue = issues.find(i => (i.title || '').startsWith('[PT][ROUTINES]') || (i.labels || []).includes('type::routine'));
+                if (!routineIssue) return;
+                this.routineIssueIid = routineIssue.iid;
+
+                const defs = this.parseRoutinesFromDescription(routineIssue.description || '');
+                const routines = defs.map(d => ({
+                    id: d.id,
+                    title: d.title,
+                    icon: d.icon,
+                    createdAt: d.createdAt || null,
+                    history: [],
+                    streak: 0
+                }));
+
+                // parse logs from notes
+                const notes = await this.requestAllPages(`/projects/${this.projectId}/issues/${routineIssue.iid}/notes?sort=desc`, 15);
+                const logs = [];
+                notes.forEach(n => {
+                    const firstLine = (n.body || '').split('\n')[0];
+                    if (!firstLine.startsWith('PT_ROUTINE_LOG|')) return;
+                    const parts = firstLine.split('|');
+                    if (parts.length < 3) return;
+                    const date = parts[1];
+                    const csv = parts[2] || '';
+                    logs.push({ date, ids: csv ? csv.split(',').filter(Boolean) : [] });
+                });
+
+                const dateToIds = new Map();
+                logs.forEach(l => {
+                    // upsert latest (notes sort desc => latest first). Kita simpan yang pertama ketemu.
+                    if (!dateToIds.has(l.date)) dateToIds.set(l.date, l.ids);
+                });
+
+                // convert yyyy-mm-dd => toDateString
+                dateToIds.forEach((ids, dateStr) => {
+                    const d = new Date(dateStr + 'T00:00:00');
+                    const dayKey = d.toDateString();
+                    routines.forEach(r => {
+                        if (ids.includes(r.id)) r.history.push(dayKey);
+                    });
+                });
+
+                // compute streak
+                routines.forEach(r => {
+                    let streak = 0;
+                    let d = new Date();
+                    while (r.history.includes(d.toDateString())) {
+                        streak++;
+                        d.setDate(d.getDate() - 1);
+                    }
+                    r.streak = streak;
+                });
+
+                app.routines.routines = routines;
+                // jangan simpan ke local
+                app.ui.renderRoutines();
+                app.ui.renderRoutineManagement();
+                this.log(`🌞 Rutinitas dimuat: ${routines.length}`);
+            }
+
+            async pullTargetsFromGitlab(issues) {
+                const plans = [];
+
+                for (const issue of issues) {
+                    const isRoutine = (issue.title || '').startsWith('[PT][ROUTINES]') || (issue.labels || []).includes('type::routine');
+                    if (isRoutine) continue;
+
+                    // Skip deleted/archived
+                    if ((issue.labels || []).includes('pt::deleted')) continue;
+
+                    // Parse steps from markdown task list
+                    const steps = [];
+                    const taskRegex = /- \[(x| )\] (.+)/g;
+                    let m;
+                    while ((m = taskRegex.exec(issue.description || '')) !== null) {
+                        steps.push({ id: app.plans.genId(), text: m[2], completed: m[1] === 'x' });
+                    }
+
+                    // Parse PlanTracker ID
+                    const idMatch = (issue.description || '').match(/\*\*PlanTracker ID:\*\* `([a-z0-9]+)`/i);
+                    const planId = idMatch ? idMatch[1] : `gl-${issue.iid}`;
+
+                    let priority = 'medium', category = 'personal';
+                    (issue.labels || []).forEach(l => {
+                        if (l.startsWith('priority::')) priority = l.split('::')[1];
+                        if (l.startsWith('category::')) category = l.split('::')[1];
+                    });
+
+                    const plainTitle = this.stripTitle('target', issue.title || '');
+
+                    plans.push({
+                        id: planId,
+                        title: plainTitle,
+                        description: (issue.description || '').split('## 📋')[0].trim(),
+                        priority,
+                        category,
+                        dueDate: issue.due_date || null,
+                        steps,
+                        completed: issue.state === 'closed',
+                        createdAt: issue.created_at || new Date().toISOString(),
+                        completedAt: issue.closed_at || null,
+                        gitlabIid: issue.iid
+                    });
+                }
+
+                // replace local in-memory
+                app.plans.plans = plans.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                this.log(`🎯 Target dimuat: ${app.plans.plans.length}`);
+            }
+
+            async bootstrap(showToast = false) {
+                this.init();
+                if (!this.isConfigured()) {
+                    if (showToast) app.ui.showToast('GitLab belum dikonfigurasi', 'error');
+                    return;
+                }
+
+                this.updateStatus();
+                this.log('🔄 Memuat data dari GitLab...');
+                if (showToast) app.ui.showToast('Memuat data GitLab...', 'info');
+
+                try {
+                    const issues = await this.requestAllPages(`/projects/${this.projectId}/issues?state=all&labels=plantracker`);
+                    await this.pullRoutinesFromGitlab(issues);
+                    await this.pullTargetsFromGitlab(issues);
+
+                    // refresh UI
+                    app.ui.renderPlans();
+                    app.ui.updateStats();
+                    app.ui.renderRoutines();
+                    if (!document.getElementById('page-calendar').classList.contains('hidden')) app.calendar.render();
+
+                    this.log('✅ Selesai memuat');
+                    if (showToast) app.ui.showToast('Data GitLab siap!', 'success');
+                } catch (err) {
+                    console.error(err);
+                    this.log(`❌ Error: ${err.message}`);
+                    if (showToast) app.ui.showToast('Gagal memuat dari GitLab', 'error');
+                }
+            }
+
+            queueSyncPlan(planId, delay = 900) {
+                if (!this.isConfigured()) return;
+                if (this.syncTimers.has(planId)) clearTimeout(this.syncTimers.get(planId));
+                const t = setTimeout(() => this.syncPlan(planId).catch(() => {}), delay);
+                this.syncTimers.set(planId, t);
+            }
+
+            queueSyncRoutines(delay = 1200) {
+                if (!this.isConfigured()) return;
+                if (this.routineTimer) clearTimeout(this.routineTimer);
+                this.routineTimer = setTimeout(() => this.syncRoutinesDefinitions().catch(() => {}), delay);
+            }
+
+            queueSyncRoutineLog(dateObj, completedIds, delay = 1400) {
+                if (!this.isConfigured()) return;
+                if (this.routineLogTimer) clearTimeout(this.routineLogTimer);
+                this.routineLogTimer = setTimeout(() => this.upsertRoutineLog(dateObj, completedIds).catch(() => {}), delay);
+            }
+
+            async syncPlan(planId) {
+                if (!this.isConfigured()) { app.ui.showToast('Konfigurasi GitLab dulu', 'error'); return; }
+                const plan = app.plans.getById(planId);
+                if (!plan) return;
+
+                try {
+                    const desc = this.planToMarkdown(plan);
+                    const labels = this.getPlanLabels(plan);
+                    const title = this.formatTitle('target', plan.title);
+
+                    if (plan.gitlabIid) {
+                        await this.request(`/projects/${this.projectId}/issues/${plan.gitlabIid}`, {
+                            method: 'PUT',
+                            body: JSON.stringify({
+                                title,
+                                description: desc,
+                                labels: labels.join(','),
+                                due_date: plan.dueDate || null,
+                                state_event: plan.completed ? 'close' : 'reopen'
+                            })
+                        });
+                        this.log(`🔁 Update: ${plan.title}`);
+                    } else {
+                        const issue = await this.request(`/projects/${this.projectId}/issues`, {
+                            method: 'POST',
+                            body: JSON.stringify({
+                                title,
+                                description: desc,
+                                labels: labels.join(','),
+                                due_date: plan.dueDate || null
+                            })
+                        });
+                        plan.gitlabIid = issue.iid;
+                        // save local memory only
+                        app.plans.save({ skipStreak: true });
+                        app.gamification.unlock('gitlab_sync');
+                        app.ui.renderPlans();
+                        this.log(`🆕 Create: ${plan.title}`);
+                    }
+                } catch (err) {
+                    this.log(`❌ Sync plan gagal: ${err.message}`);
+                }
+            }
+
+            async deletePlanRemote(plan) {
+                if (!this.isConfigured() || !plan.gitlabIid) return;
+                try {
+                    // Tidak bisa delete permanent di banyak GitLab; kita "close" + label deleted
+                    const labels = (this.getPlanLabels(plan).filter(l => !l.startsWith('status::'))).concat(['pt::deleted']);
+                    await this.request(`/projects/${this.projectId}/issues/${plan.gitlabIid}`, {
+                        method: 'PUT',
+                        body: JSON.stringify({
+                            state_event: 'close',
+                            labels: labels.join(','),
+                            title: this.formatTitle('target', plan.title)
+                        })
+                    });
+                    this.log(`🗑️ Remote archived: ${plan.title}`);
+                } catch (e) {
+                    this.log(`❌ Remote delete gagal: ${e.message}`);
+                }
+            }
+
+            async pushAllToGitlab() {
+                if (!this.isConfigured()) { app.ui.showToast('Konfigurasi GitLab dulu', 'error'); return; }
+                this.log('🚀 Push semua (target + rutinitas)...');
+                try {
+                    await this.syncRoutinesDefinitions();
+                    for (const plan of app.plans.plans) {
+                        await this.syncPlan(plan.id);
+                    }
+                    app.gamification.unlock('gitlab_sync');
+                    this.log('✅ Push selesai');
+                    app.ui.showToast('Push selesai!', 'success');
+                } catch (e) {
+                    this.log(`❌ Push gagal: ${e.message}`);
+                    app.ui.showToast('Push gagal', 'error');
+                }
+            }
+        }
+
+        // ========== Settings Manager ==========
+        class SettingsManager {
+            constructor(storage, gitlab) {
+                this.storage = storage;
+                this.gitlab = gitlab;
+                this.init();
+            }
+            init() {
+                document.getElementById('gitlab-token').value = this.storage.get('gitlab_token', '');
+                document.getElementById('gitlab-url').value = this.storage.get('gitlab_url', 'https://gitlab.com');
+                document.getElementById('gemini-key').value = this.storage.get('gemini_key', '');
+            }
+            save() {
+                const token = document.getElementById('gitlab-token').value.trim();
+                const url = document.getElementById('gitlab-url').value.trim() || 'https://gitlab.com';
+                const projectId = document.getElementById('gitlab-project').value;
+                this.storage.set('gitlab_token', token);
+                this.storage.set('gitlab_url', url);
+                this.storage.set('gitlab_project', projectId);
+
+                this.gitlab.token = token;
+                this.gitlab.baseUrl = url;
+                this.gitlab.projectId = projectId;
+
+                app.ui.showToast('Pengaturan disimpan!', 'success');
+
+                // Auto bootstrap dari GitLab jika sudah lengkap
+                if (this.gitlab.isConfigured()) {
+                    this.gitlab.bootstrap(true);
+                }
+            }
+            saveAIKey() {
+                const key = document.getElementById('gemini-key').value.trim();
+                this.storage.set('gemini_key', key);
+                if (app.ai && app.ai.setKey) app.ai.setKey(key);
+                app.ui.showToast('API Key Gemini disimpan!', 'success');
+            }
+        }
+
+        // ========== Data Manager ==========
+        class DataManager {
+            constructor(storage, plans, routines) {
+                this.storage = storage;
+                this.plans = plans;
+                this.routines = routines;
+            }
+
+            exportJSON() {
+                const data = {
+                    version: '4.0',
+                    exportedAt: new Date().toISOString(),
+                    plans: this.plans.plans,
+                    routines: this.routines.routines,
+                    activities: this.storage.get('activities', []),
+                    xp: this.storage.get('xp', 0),
+                    level: this.storage.get('level', 1),
+                    achievements: this.storage.get('achievements', [])
+                };
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = `plantracker-${new Date().toISOString().split('T')[0]}.json`;
+                a.click();
+                app.ui.showToast('Export berhasil!', 'success');
+            }
+
+            importJSON(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    try {
+                        const data = JSON.parse(ev.target.result);
+                        let countPlans = 0;
+                        if (data.plans && Array.isArray(data.plans)) {
+                            data.plans.forEach(p => {
+                                if (!this.plans.getById(p.id)) { this.plans.plans.push(p); countPlans++; }
+                            });
+                        }
+
+                        let countRoutines = 0;
+                        if (data.routines && Array.isArray(data.routines)) {
+                            data.routines.forEach(r => {
+                                if (!this.routines.routines.find(x => x.id === r.id)) {
+                                    this.routines.routines.push(r);
+                                    countRoutines++;
+                                }
+                            });
+                        }
+
+                        this.plans.save({ skipStreak: true });
+                        this.routines.save();
+
+                        app.ui.renderPlans();
+                        app.ui.renderRoutines();
+                        app.ui.updateStats();
+
+                        app.ui.showToast(`${countPlans} target & ${countRoutines} rutinitas diimport!`, 'success');
+
+                        if (app.gitlab.isConfigured()) {
+                            app.ui.showToast('GitLab mode aktif: pertimbangkan Push Semua untuk sinkron', 'info');
+                        }
+                    } catch {
+                        app.ui.showToast('Format file tidak valid', 'error');
+                    }
+                };
+                reader.readAsText(file);
+                e.target.value = '';
+            }
+
+            downloadPreset() {
+                const futureDate = (days) => { const d = new Date(); d.setDate(d.getDate() + days); return d.toISOString().split('T')[0]; };
+                const today = new Date().toDateString();
+                const preset = {
+                    version: "4.0",
+                    description: "Preset contoh PlanTracker Pro (cocok untuk di-push ke GitLab).",
+                    tipsGitLab: "Saat push, issue target akan memakai prefix [PT][TARGET]. Rutinitas disimpan dalam issue [PT][ROUTINES] + log harian via comment.",
+                    routines: [
+                        { id: "r1", title: "Minum Air", icon: "💧", history: [today], streak: 1, createdAt: new Date().toISOString() },
+                        { id: "r2", title: "Baca 10 menit", icon: "📚", history: [], streak: 0, createdAt: new Date().toISOString() },
+                        { id: "r3", title: "Jalan 15 menit", icon: "🏃", history: [], streak: 0, createdAt: new Date().toISOString() }
+                    ],
+                    plans: [
+                        {
+                            id: "demo1",
+                            title: "Belajar React Native",
+                            description: "Mempelajari React Native dari dasar hingga bisa publish build.",
+                            priority: "high",
+                            category: "learning",
+                            dueDate: futureDate(30),
+                            steps: [
+                                { id: "s1", text: "Setup environment (Node, Android Studio)", completed: false },
+                                { id: "s2", text: "Pelajari komponen dasar", completed: false },
+                                { id: "s3", text: "Buat mini project", completed: false }
+                            ],
+                            completed: false,
+                            createdAt: new Date().toISOString(),
+                            completedAt: null,
+                            gitlabIid: null
+                        },
+                        {
+                            id: "demo2",
+                            title: "Bangun Landing Page Produk",
+                            description: "Siapkan copywriting, desain, dan publish ke hosting.",
+                            priority: "medium",
+                            category: "project",
+                            dueDate: futureDate(14),
+                            steps: [
+                                { id: "s1", text: "Tentukan value proposition", completed: false },
+                                { id: "s2", text: "Draft layout", completed: false },
+                                { id: "s3", text: "Publish", completed: false }
+                            ],
+                            completed: false,
+                            createdAt: new Date().toISOString(),
+                            completedAt: null,
+                            gitlabIid: null
+                        }
+                    ]
+                };
+                const blob = new Blob([JSON.stringify(preset, null, 2)], { type: 'application/json' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = 'plantracker-preset.json';
+                a.click();
+                app.ui.showToast('Preset di-download!', 'success');
+            }
+
+            clearAll() {
+                if (confirm('Hapus SEMUA data? Tindakan ini tidak dapat dibatalkan!')) {
+                    this.storage.clear();
+                    location.reload();
+                }
+            }
+        }
+
+        // ========== UI Manager ==========
+        class UIManager {
+            constructor(plans, theme, gamification, routines) {
+                this.plans = plans;
+                this.theme = theme;
+                this.gamification = gamification;
+                this.routines = routines;
+                this.filter = 'all';
+                this.search = '';
+                this.categoryEmojis = { personal: '💪', work: '💼', learning: '📚', project: '🚀', health: '❤️', finance: '💰' };
+                this.categoryColors = { personal: '#8b5cf6', work: '#3b82f6', learning: '#f59e0b', project: '#10b981', health: '#ef4444', finance: '#06b6d4' };
+                this.quotes = [
+                    { text: "Perjalanan seribu mil dimulai dengan satu langkah.", author: "Lao Tzu" },
+                    { text: "Sukses adalah hasil persiapan, kerja keras, dan belajar dari kegagalan.", author: "Colin Powell" },
+                    { text: "Jangan pernah menyerah. Hari ini sulit, besok lebih sulit, tapi lusa indah.", author: "Jack Ma" },
+                    { text: "Satu-satunya cara melakukan pekerjaan hebat adalah mencintai apa yang kamu lakukan.", author: "Steve Jobs" }
+                ];
+                this.init();
+            }
+
+            init() {
+                this.renderPlans();
+                this.updateStats();
+                this.plans.updateStreak();
+                this.gamification.updateUI();
+                this.updateQuote();
+                this.renderRoutines();
+
+                document.getElementById('plan-form').addEventListener('submit', (e) => { e.preventDefault(); this.savePlan(); });
+
+                document.getElementById('routine-form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const id = document.getElementById('routine-id').value;
+                    const title = document.getElementById('routine-title').value.trim();
+                    const icon = document.getElementById('routine-icon').value.trim() || '💧';
+                    if (!title) return;
+                    if (id) this.routines.update(id, title, icon);
+                    else this.routines.add(title, icon);
+                    this.resetRoutineForm();
+                });
+
+                // Update routine progress pill
+                this.updateRoutineTodayUI();
+            }
+
+            updateQuote() {
+                const q = this.quotes[Math.floor(Math.random() * this.quotes.length)];
+                document.getElementById('daily-quote').textContent = `"${q.text}"`;
+                document.getElementById('quote-author').textContent = `- ${q.author}`;
+            }
+
+            showToast(msg, type = 'success') {
+                const toast = document.getElementById('toast');
+                const msgEl = document.getElementById('toast-message');
+                toast.className = `toast ${type}`;
+                msgEl.textContent = msg;
+                toast.querySelector('i').className = type === 'success' ? 'fas fa-check-circle' :
+                    type === 'error' ? 'fas fa-exclamation-circle' : type === 'xp' ? 'fas fa-star' : 'fas fa-info-circle';
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 3200);
+            }
+
+            showXPPopup(amount) {
+                const popup = document.createElement('div');
+                popup.className = 'xp-popup';
+                popup.textContent = `+${amount} XP`;
+                popup.style.left = '50%';
+                popup.style.top = '40%';
+                popup.style.transform = 'translateX(-50%)';
+                document.body.appendChild(popup);
+                setTimeout(() => popup.remove(), 1000);
+            }
+
+            showLevelUp(level, title, icon) {
+                document.getElementById('levelup-icon').textContent = icon;
+                document.getElementById('new-level').textContent = `Level ${level}`;
+                document.getElementById('new-title').innerHTML = `<i class="fas fa-star mr-1"></i> ${title}`;
+                document.getElementById('levelup-modal').classList.add('active');
+                this.celebrate();
+            }
+
+            closeLevelUpModal() { document.getElementById('levelup-modal').classList.remove('active'); }
+            toggleTheme() { this.theme.toggle(); }
+
+            switchPage(page) {
+                document.querySelectorAll('.page').forEach(el => el.classList.add('hidden'));
+                document.getElementById(`page-${page}`).classList.remove('hidden');
+                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+                document.querySelector(`[data-page="${page}"]`).classList.add('active');
+                document.getElementById('fab-add').classList.toggle('hidden', page !== 'dashboard');
+                document.getElementById('fab-ai').classList.toggle('hidden', page !== 'dashboard');
+
+                if (page === 'calendar') app.calendar.render();
+                if (page === 'stats') this.renderStats();
+                if (page === 'achievements') this.renderAchievements();
+                if (page === 'settings') app.gitlab.updateStatus();
+            }
+
+            setFilter(filter) {
+                this.filter = filter;
+                document.querySelectorAll('.filter-pill').forEach(el => el.classList.toggle('active', el.dataset.filter === filter));
+                this.renderPlans();
+            }
+
+            handleSearch() {
+                this.search = document.getElementById('search-input').value.toLowerCase();
+                document.getElementById('search-clear').classList.toggle('show', this.search.length > 0);
+                this.renderPlans();
+            }
+
+            clearSearch() {
+                document.getElementById('search-input').value = '';
+                this.search = '';
+                document.getElementById('search-clear').classList.remove('show');
+                this.renderPlans();
+            }
+
+            getFilteredPlans() {
+                let plans = this.plans.plans;
+                if (this.search) {
+                    plans = plans.filter(p => p.title.toLowerCase().includes(this.search) || (p.description || '').toLowerCase().includes(this.search));
+                }
+                const today = new Date(); today.setHours(0, 0, 0, 0);
+                switch (this.filter) {
+                    case 'planning': return plans.filter(p => this.plans.getStatus(p) === 'planning');
+                    case 'progress': return plans.filter(p => this.plans.getStatus(p) === 'progress');
+                    case 'completed': return plans.filter(p => this.plans.getStatus(p) === 'completed');
+                    case 'high': return plans.filter(p => p.priority === 'high' && !p.completed);
+                    case 'today':
+                        return plans.filter(p => {
+                            if (!p.dueDate || p.completed) return false;
+                            const due = new Date(p.dueDate); due.setHours(0, 0, 0, 0);
+                            return due.getTime() === today.getTime();
+                        });
+                    case 'overdue':
+                        return plans.filter(p => {
+                            if (!p.dueDate || p.completed) return false;
+                            const due = new Date(p.dueDate); due.setHours(0, 0, 0, 0);
+                            return due < today;
+                        });
+                    default:
+                        return plans;
+                }
+            }
+
+            renderPlans() {
+                const container = document.getElementById('plans-list');
+                const empty = document.getElementById('empty-state');
+                const plans = this.getFilteredPlans();
+
+                if (plans.length === 0) {
+                    container.innerHTML = '';
+                    empty.classList.remove('hidden');
+                    return;
+                }
+
+                empty.classList.add('hidden');
+                container.innerHTML = plans.map((p, i) => this.renderPlanCard(p, i)).join('');
+            }
+
+            renderRoutines() {
+                const list = document.getElementById('routine-list');
+                const today = new Date().toDateString();
+                const routines = this.routines.routines;
+
+                if (routines.length === 0) {
+                    list.innerHTML = `<button onclick="app.ui.showRoutineModal(true)" class="text-sm text-center w-full py-4" style="color: var(--text-muted); border: 1px dashed var(--border); border-radius: 14px; background: var(--bg-secondary)">Tap + untuk buat Rutinitas</button>`;
+                    this.updateRoutineTodayUI();
+                    return;
+                }
+
+                list.innerHTML = routines.map(r => {
+                    const done = r.history.includes(today);
+                    return `
+                        <div class="routine-item" onclick="app.routines.toggle('${r.id}')">
+                            <div class="routine-circle ${done ? 'done' : ''}">
+                                ${done ? '<i class="fas fa-check"></i>' : r.icon}
+                            </div>
+                            <span class="text-[10px] font-semibold truncate w-full text-center" style="color: var(--text-primary)">${r.title}</span>
+                            <span class="routine-streak">🔥 ${r.streak}</span>
+                        </div>
+                    `;
+                }).join('');
+
+                this.updateRoutineTodayUI();
+            }
+
+            updateRoutineTodayUI() {
+                const { total, done, percent } = this.routines.getTodayProgress();
+                const pill = document.getElementById('routine-today-pill');
+                const sub = document.getElementById('routine-today-sub');
+                const bar = document.getElementById('routine-today-bar');
+                if (pill) pill.textContent = `${done}/${total}`;
+                if (bar) bar.style.width = `${percent}%`;
+                if (sub) {
+                    sub.textContent = total === 0 ? 'Buat rutinitas pertama kamu' : (done === total ? 'Mantap! Semua rutin hari ini selesai.' : `${total - done} rutin lagi untuk selesai.`);
+                }
+            }
+
+            renderRoutineManagement() {
+                const container = document.getElementById('routine-management-list');
+                if (this.routines.routines.length === 0) {
+                    container.innerHTML = '<p class="text-xs text-center" style="color: var(--text-muted); padding: 8px 0">Belum ada rutinitas</p>';
+                    return;
+                }
+                container.innerHTML = this.routines.routines.map(r => `
+                    <div class="flex items-center justify-between p-2 rounded-lg" style="background: var(--bg-tertiary)">
+                        <div class="flex items-center gap-2 min-w-0">
+                            <span class="text-xl">${r.icon}</span>
+                            <span class="text-sm font-semibold truncate" style="color: var(--text-primary)">${r.title}</span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <button class="btn btn-sm btn-ghost btn-icon" onclick="app.ui.editRoutine('${r.id}')" title="Edit">
+                                <i class="fas fa-pen" style="color: var(--info)"></i>
+                            </button>
+                            <button class="btn btn-sm btn-ghost btn-icon" onclick="app.routines.delete('${r.id}')" title="Hapus">
+                                <i class="fas fa-trash-alt" style="color: var(--danger)"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            editRoutine(id) {
+                const r = this.routines.routines.find(x => x.id === id);
+                if (!r) return;
+                document.getElementById('routine-id').value = r.id;
+                document.getElementById('routine-title').value = r.title;
+                document.getElementById('routine-icon').value = r.icon;
+                document.getElementById('routine-submit').innerHTML = '<i class="fas fa-save"></i> Simpan';
+            }
+
+            resetRoutineForm() {
+                document.getElementById('routine-id').value = '';
+                document.getElementById('routine-title').value = '';
+                document.getElementById('routine-icon').value = '💧';
+                document.getElementById('routine-submit').innerHTML = '<i class="fas fa-plus"></i> Tambah';
+                document.getElementById('routine-title').focus();
+            }
+
+            renderPlanCard(plan, index) {
+                const progress = this.plans.getProgress(plan);
+                const status = this.plans.getStatus(plan);
+                const isExpanded = this.plans.expandedId === plan.id;
+                const priorityLabels = { low: 'Rendah', medium: 'Sedang', high: 'Tinggi' };
+                const dueInfo = plan.dueDate ? this.getDueInfo(plan.dueDate, plan.completed) : null;
+
+                return `
+                    <div class="card plan-card ${isExpanded ? 'expanded' : ''} animate-slide-up" style="animation-delay: ${index * 0.05}s; border-left: 4px solid ${this.categoryColors[plan.category]}" data-id="${plan.id}">
+                        <div class="p-3" onclick="app.ui.toggleExpand('${plan.id}')">
+                            <div class="flex items-start gap-3">
+                                <div class="w-12 h-12 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
+                                     style="background: ${status === 'completed' ? 'rgba(16, 185, 129, 0.15)' : 'var(--bg-tertiary)'}">
+                                    ${status === 'completed' ? '✅' : this.categoryEmojis[plan.category]}
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center gap-2 mb-1 flex-wrap">
+                                        <span class="badge badge-${plan.priority}">${priorityLabels[plan.priority]}</span>
+                                        ${plan.gitlabIid ? '<span class="text-[10px] font-bold" style="color:#fc6d26">GitLab</span>' : ''}
+                                    </div>
+                                    <h3 class="font-bold text-sm mb-1 ${plan.completed ? 'line-through opacity-50' : ''}" style="color: var(--text-primary)">${plan.title}</h3>
+                                    ${dueInfo ? `<p class="text-xs font-semibold" style="color: ${dueInfo.color}">${dueInfo.text}</p>` : ''}
+                                </div>
+                                <div class="flex flex-col items-end gap-1">
+                                    <span class="text-lg font-bold" style="color: ${status === 'completed' ? 'var(--success)' : 'var(--primary)'}">${progress}%</span>
+                                    <i class="fas fa-chevron-${isExpanded ? 'up' : 'down'} text-xs" style="color: var(--text-muted)"></i>
+                                </div>
+                            </div>
+                            <div class="mt-2 h-1.5 rounded-full overflow-hidden" style="background: var(--bg-tertiary)">
+                                <div class="h-full rounded-full transition-all" style="background: ${status === 'completed' ? 'var(--success)' : `linear-gradient(90deg, var(--primary), ${this.categoryColors[plan.category]})`}; width: ${progress}%"></div>
+                            </div>
+                        </div>
+
+                        <div class="plan-steps">
+                            <div class="px-3 pb-2">
+                                <div class="text-[10px] font-bold mb-2" style="color: var(--text-muted)">
+                                    LANGKAH (${plan.steps.filter(s => s.completed).length}/${plan.steps.length})
+                                </div>
+                                <div class="space-y-1.5">
+                                    ${plan.steps.map(step => `
+                                        <div class="flex items-center gap-2 p-2 rounded-lg" style="background: var(--bg-tertiary)"
+                                             onclick="event.stopPropagation(); app.plans.toggleStep('${plan.id}', '${step.id}')">
+                                            <div class="step-check ${step.completed ? 'done' : ''}">
+                                                ${step.completed ? '<i class="fas fa-check text-xs"></i>' : ''}
+                                            </div>
+                                            <span class="text-xs flex-1 ${step.completed ? 'line-through opacity-50' : ''}" style="color: var(--text-primary)">${step.text}</span>
+                                            ${step.completed ? '<span class="text-[10px] font-bold" style="color: var(--xp-color)">+10</span>' : ''}
+                                        </div>
+                                    `).join('')}
+                                    ${plan.steps.length === 0 ? '<p class="text-xs text-center py-2" style="color: var(--text-muted)">Belum ada langkah</p>' : ''}
+                                </div>
+                            </div>
+                            <div class="quick-actions">
+                                <button class="quick-btn edit-btn" onclick="event.stopPropagation(); app.ui.showPlanModal('${plan.id}')">
+                                    <i class="fas fa-edit"></i><span>Edit</span>
+                                </button>
+                                <button class="quick-btn gitlab-btn" onclick="event.stopPropagation(); app.gitlab.queueSyncPlan('${plan.id}', 0); app.ui.showToast('Sync dijadwalkan...', 'info');">
+                                    <i class="fab fa-gitlab"></i><span>${plan.gitlabIid ? 'Sync' : 'Push'}</span>
+                                </button>
+                                <button class="quick-btn done-btn" onclick="event.stopPropagation(); app.plans.toggleComplete('${plan.id}')">
+                                    <i class="fas fa-${plan.completed ? 'undo' : 'check'}"></i><span>${plan.completed ? 'Buka' : 'Selesai'}</span>
+                                </button>
+                                <button class="quick-btn delete-btn" onclick="event.stopPropagation(); app.plans.delete('${plan.id}')">
+                                    <i class="fas fa-trash"></i><span>Hapus</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            getDueInfo(dueDate, completed) {
+                if (completed) return null;
+                const due = new Date(dueDate); const today = new Date();
+                today.setHours(0, 0, 0, 0); due.setHours(0, 0, 0, 0);
+                const diff = Math.ceil((due - today) / (1000 * 60 * 60 * 24));
+                if (diff < 0) return { text: `⚠️ Terlambat ${Math.abs(diff)} hari`, color: 'var(--danger)' };
+                if (diff === 0) return { text: '🔥 Deadline hari ini!', color: 'var(--warning)' };
+                if (diff <= 3) return { text: `⏰ ${diff} hari lagi`, color: 'var(--warning)' };
+                return { text: `📅 ${due.toLocaleDateString('id-ID')}`, color: 'var(--text-muted)' };
+            }
+
+            toggleExpand(planId) {
+                this.plans.expandedId = this.plans.expandedId === planId ? null : planId;
+                this.renderPlans();
+            }
+
+            showPlanModal(planId = null) {
+                const modal = document.getElementById('plan-modal');
+                const form = document.getElementById('plan-form');
+                form.reset();
+                document.getElementById('steps-container').innerHTML = '';
+                document.getElementById('plan-id').value = '';
+                if (planId) {
+                    const plan = this.plans.getById(planId);
+                    if (plan) {
+                        document.getElementById('modal-title').textContent = 'Edit Target';
+                        document.getElementById('plan-id').value = plan.id;
+                        document.getElementById('plan-title').value = plan.title;
+                        document.getElementById('plan-desc').value = plan.description;
+                        document.getElementById('plan-priority').value = plan.priority;
+                        document.getElementById('plan-category').value = plan.category;
+                        document.getElementById('plan-due').value = plan.dueDate || '';
+                        plan.steps.forEach(s => this.addStepInput(s.text, s.id, s.completed));
+                    }
+                } else {
+                    document.getElementById('modal-title').textContent = 'Target Baru';
+                    this.addStepInput();
+                }
+                modal.classList.add('active');
+            }
+
+            closePlanModal() { document.getElementById('plan-modal').classList.remove('active'); }
+
+            showRoutineModal(isAddMode = false) {
+                this.renderRoutineManagement();
+                document.getElementById('routine-modal').classList.add('active');
+                if (isAddMode) document.getElementById('routine-title').focus();
+            }
+
+            closeRoutineModal() { document.getElementById('routine-modal').classList.remove('active'); }
+
+            showMagicModal() { document.getElementById('magic-modal').classList.add('active'); }
+            closeMagicModal() { document.getElementById('magic-modal').classList.remove('active'); }
+
+            addStepInput(text = '', id = null, completed = false) {
+                const container = document.getElementById('steps-container');
+                const stepId = id || (Date.now() + Math.random());
+                const div = document.createElement('div');
+                div.className = 'flex items-center gap-2';
+                div.innerHTML = `
+                    <input type="text" class="input flex-1" placeholder="Langkah..." value="${(text || '').replace(/\"/g, '&quot;')}"
+                           data-step-id="${stepId}" data-completed="${completed}" style="padding: 12px; font-size: 14px;">
+                    <button type="button" class="btn btn-ghost btn-sm btn-icon" onclick="this.parentElement.remove()">
+                        <i class="fas fa-times" style="color: var(--danger)"></i>
+                    </button>
+                `;
+                container.appendChild(div);
+            }
+
+            savePlan() {
+                const id = document.getElementById('plan-id').value;
+                const title = document.getElementById('plan-title').value.trim();
+                const description = document.getElementById('plan-desc').value.trim();
+                const priority = document.getElementById('plan-priority').value;
+                const category = document.getElementById('plan-category').value;
+                const dueDate = document.getElementById('plan-due').value;
+                const steps = Array.from(document.querySelectorAll('#steps-container input[type="text"]'))
+                    .filter(i => i.value.trim())
+                    .map(i => ({ id: i.dataset.stepId, text: i.value.trim(), completed: i.dataset.completed === 'true' }));
+
+                if (!title) { this.showToast('Judul wajib diisi', 'error'); return; }
+
+                if (id) {
+                    this.plans.update(id, { title, description, priority, category, dueDate, steps });
+                    this.showToast('Target diperbarui!', 'success');
+                } else {
+                    this.plans.add({ title, description, priority, category, dueDate, steps });
+                    this.showToast('Target dibuat! +15 XP', 'success');
+                }
+
+                this.closePlanModal();
+                this.renderPlans();
+                this.updateStats();
+            }
+
+            updateStats() {
+                const stats = this.plans.getStats();
+                document.getElementById('stat-total').textContent = stats.total;
+                document.getElementById('stat-planning').textContent = stats.planning;
+                document.getElementById('stat-progress').textContent = stats.inProgress;
+                document.getElementById('stat-completed').textContent = stats.completed;
+
+                const gitlabMode = app.gitlab.isConfigured();
+                document.getElementById('header-subtitle').textContent = gitlabMode
+                    ? `GitLab Mode • ${stats.completed}/${stats.total} selesai`
+                    : (stats.total > 0 ? `${stats.completed}/${stats.total} selesai` : 'Aktif');
+
+                this.gamification.checkAchievements(stats, this.plans.storage.get('streak', 0));
+                this.updateRoutineTodayUI();
+            }
+
+            renderStats() {
+                const stats = this.plans.getStats();
+                const completionRate = stats.total > 0 ? Math.round((stats.completed / stats.total) * 100) : 0;
+
+                document.getElementById('completion-percent').textContent = completionRate + '%';
+                document.getElementById('completion-ring').style.strokeDashoffset = 251 - (251 * completionRate / 100);
+
+                document.getElementById('stats-total').textContent = stats.total;
+                document.getElementById('stats-steps').textContent = stats.totalSteps;
+                document.getElementById('stats-steps-done').textContent = stats.completedSteps;
+                document.getElementById('steps-bar').style.width = '100%';
+                document.getElementById('steps-done-bar').style.width = stats.totalSteps > 0 ? (stats.completedSteps / stats.totalSteps * 100) + '%' : '0%';
+
+                const rStats = this.routines.getStats();
+                document.getElementById('routine-consistency').textContent = rStats.percent + '%';
+                document.getElementById('routine-alltime').textContent = `${rStats.allTimeChecks} cek`;
+
+                document.getElementById('routine-stats-list').innerHTML = rStats.items.map(i => `
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background: rgba(99,102,241,0.15); color: var(--text-primary); font-size: 18px">${i.icon}</div>
+                        <div class="flex-1">
+                             <div class="flex justify-between text-xs mb-1">
+                                <span style="color: var(--text-primary)">${i.title}</span>
+                                <span style="color: var(--text-muted)">${i.rate}% • 🔥${i.streak}</span>
+                            </div>
+                            <div class="h-2 rounded-full overflow-hidden" style="background: var(--bg-tertiary)">
+                                <div class="h-full rounded-full" style="background: var(--primary); width: ${i.rate}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('') || '<p class="text-xs text-center" style="color: var(--text-muted)">Belum ada rutinitas</p>';
+
+                const weekly = this.plans.getWeeklyActivity();
+                const max = Math.max(...weekly, 1);
+                document.getElementById('weekly-chart').innerHTML = weekly.map((v) =>
+                    `<div class="flex-1 flex flex-col items-center gap-1">
+                        <div class="w-full rounded-t-lg" style="height: ${Math.max(10, v / max * 100)}%; background: linear-gradient(180deg, var(--primary), var(--purple));"></div>
+                        <span class="text-[10px] font-bold" style="color: var(--text-muted)">${v}</span>
+                    </div>`
+                ).join('');
+
+                const cats = this.plans.getCategoryStats();
+                const catLabels = { personal: '💪 Personal', work: '💼 Kerja', learning: '📚 Belajar', project: '🚀 Proyek', health: '❤️ Kesehatan', finance: '💰 Keuangan' };
+                document.getElementById('category-stats').innerHTML = Object.entries(cats).map(([k, v]) => `
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background: ${this.categoryColors[k]}20">
+                            <span class="text-sm">${this.categoryEmojis[k]}</span>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex justify-between text-xs mb-1">
+                                <span style="color: var(--text-primary)">${catLabels[k]}</span>
+                                <span style="color: var(--text-muted)">${v.completed}/${v.total}</span>
+                            </div>
+                            <div class="h-2 rounded-full overflow-hidden" style="background: var(--bg-tertiary)">
+                                <div class="h-full rounded-full" style="background: ${this.categoryColors[k]}; width: ${v.total > 0 ? (v.completed / v.total * 100) : 0}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('') || '<p class="text-sm text-center" style="color: var(--text-muted)">Belum ada data</p>';
+
+                const priority = this.plans.getPriorityStats();
+                const prioColors = { high: 'var(--danger)', medium: 'var(--warning)', low: 'var(--success)' };
+                const prioLabels = { high: '🔴 Tinggi', medium: '🟡 Sedang', low: '🟢 Rendah' };
+                document.getElementById('priority-stats').innerHTML = Object.entries(priority).map(([k, v]) => `
+                    <div class="card p-3 text-center">
+                        <div class="text-lg font-bold" style="color: ${prioColors[k]}">${v.completed}/${v.total}</div>
+                        <div class="text-[10px] font-semibold" style="color: var(--text-muted)">${prioLabels[k]}</div>
+                    </div>
+                `).join('');
+            }
+
+            renderAchievements() {
+                document.getElementById('achievements-count').textContent = `${this.gamification.achievements.length}/${this.gamification.achievementDefs.length}`;
+                document.getElementById('achievements-list').innerHTML = this.gamification.achievementDefs.map(a => {
+                    const unlocked = this.gamification.achievements.includes(a.id);
+                    return `
+                        <div class="achievement ${unlocked ? 'unlocked' : 'locked'}">
+                            <div class="achievement-icon">${a.icon}</div>
+                            <div class="flex-1">
+                                <div class="font-bold text-sm" style="color: var(--text-primary)">${a.title}</div>
+                                <div class="text-xs" style="color: var(--text-muted)">${a.desc}</div>
+                            </div>
+                            <div class="text-sm font-bold" style="color: var(--xp-color)">+${a.xp}</div>
+                        </div>
+                    `;
+                }).join('');
+
+                const activities = this.plans.getActivities().slice(0, 15);
+                const actColors = { create: 'var(--primary)', update: 'var(--info)', delete: 'var(--danger)', complete: 'var(--success)', step: 'var(--warning)' };
+                document.getElementById('activity-log').innerHTML = activities.map(a => `
+                    <div class="timeline-item">
+                        <div class="timeline-dot" style="background: ${actColors[a.type]}"></div>
+                        <div class="text-sm font-medium" style="color: var(--text-primary)">${a.title}</div>
+                        <div class="text-xs" style="color: var(--text-muted)">${new Date(a.timestamp).toLocaleString('id-ID')}</div>
+                    </div>
+                `).join('') || '<p class="text-sm text-center" style="color: var(--text-muted)">Belum ada aktivitas</p>';
+            }
+
+            showGlobalSync() {
+                app.gitlab.updateStatus();
+                document.getElementById('sync-log').innerHTML = '<p class="text-center" style="color: var(--text-muted)">Log sync akan muncul di sini</p>';
+                document.getElementById('sync-modal').classList.add('active');
+            }
+
+            closeSyncModal() { document.getElementById('sync-modal').classList.remove('active'); }
+
+            celebrate() {
+                const colors = ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#ec4899', '#8b5cf6', '#fbbf24'];
+                for (let i = 0; i < 60; i++) {
+                    const c = document.createElement('div');
+                    c.className = 'confetti';
+                    c.style.cssText = `left: ${Math.random() * 100}vw; top: -20px;
+                        width: ${Math.random() * 12 + 6}px; height: ${Math.random() * 12 + 6}px;
+                        background: ${colors[Math.floor(Math.random() * colors.length)]};
+                        border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
+                        animation: confetti-fall ${Math.random() * 2 + 2}s linear forwards;
+                        animation-delay: ${Math.random() * 0.5}s;`;
+                    document.body.appendChild(c);
+                    setTimeout(() => c.remove(), 4000);
+                }
+            }
+        }
+
+        // ========== App ==========
+        class App {
+            constructor() {
+                // early global bind (hindari crash saat komponen lain memanggil `app` ketika init)
+                window.app = this;
+                this.audio = new AudioManager();
+                this.storage = new StorageManager();
+                this.gamification = new GamificationManager(this.storage);
+                this.theme = new ThemeManager(this.storage);
+                this.plans = new PlanManager(this.storage, this.gamification, this.audio);
+                this.routines = new RoutineManager(this.storage, this.gamification, this.audio);
+                this.calendar = new CalendarManager(this.storage, this.plans, this.routines);
+                this.gitlab = new GitLabAPI(this.storage);
+                this.ai = new AIManager(this.storage);
+                this.settings = new SettingsManager(this.storage, this.gitlab);
+                this.data = new DataManager(this.storage, this.plans, this.routines);
+                this.ui = new UIManager(this.plans, this.theme, this.gamification, this.routines);
+                this.initGestures();
+                this.initAsync();
+            }
+
+            initGestures() {
+                let startX = 0, startY = 0;
+                document.addEventListener('touchstart', e => {
+                    startX = e.touches[0].clientX;
+                    startY = e.touches[0].clientY;
+                }, { passive: true });
+                document.addEventListener('touchend', e => {
+                    const diffX = e.changedTouches[0].clientX - startX;
+                    const diffY = e.changedTouches[0].clientY - startY;
+                    if (Math.abs(diffX) > 80 && Math.abs(diffY) < 50) {
+                        const pages = ['dashboard', 'calendar', 'stats', 'achievements', 'settings'];
+                        const current = document.querySelector('.nav-item.active')?.dataset?.page || 'dashboard';
+                        const idx = pages.indexOf(current);
+                        if (diffX > 0 && idx > 0) this.ui.switchPage(pages[idx - 1]);
+                        else if (diffX < 0 && idx < pages.length - 1) this.ui.switchPage(pages[idx + 1]);
+                    }
+                }, { passive: true });
+            }
+
+            async initAsync() {
+                // load projects list if token exists
+                try {
+                    if (this.gitlab.token) {
+                        await this.gitlab.loadProjects();
+                    }
+                } catch (_) {}
+
+                // Auto bootstrap from GitLab if configured (tanpa menyimpan plans/routines di local)
+                if (this.gitlab.isConfigured()) {
+                    this.gitlab.bootstrap(false);
+                }
+            }
+        }
+
+        // expose globally untuk onclick handlers
+        window.app = app = new App();
+
+        // boot sanity check
+        setTimeout(() => {
+            try {
+                if (!window.app || !window.app.ui) return;
+                // ensure default page clickable
+                const active = document.querySelector('.nav-item.active')?.dataset?.page || 'dashboard';
+                window.app.ui.switchPage(active);
+            } catch (_) {}
+        }, 0);
+    </script>
+</body>
+</html>
